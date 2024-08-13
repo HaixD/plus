@@ -6,13 +6,14 @@ import Link from "next/link"
 import { useEffect } from "react"
 import { login } from "@/app/actions"
 import { useFormState } from "react-dom"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 export default function Page() {
     const [state, formAction] = useFormState(login, "")
+    const router = useRouter()
 
     useEffect(() => {
-        if (state === "success") redirect("/page-not-implemented")
+        if (state === "success") router.push("/page-not-implemented")
     }, [state])
     
     return (
@@ -20,7 +21,7 @@ export default function Page() {
             <Image className={styles.logo} src="/logo1.png" alt="logo" width={338} height={338}/>
             <div className={styles.login}>
                 <h1>Welcome to plus</h1>
-                <form action={formAction} method="POST">
+                <form action={formAction}>
                     <div>
                         <label htmlFor="username">Username</label>
                         <input type="text" name="username" required/>
