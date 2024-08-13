@@ -3,7 +3,7 @@
 import Image from "next/image"
 import styles from "./styles.module.css"
 import Link from "next/link"
-import { useActionState, useEffect } from "react"
+import { useEffect } from "react"
 import { login } from "@/app/actions"
 import { useFormState } from "react-dom"
 import { redirect } from "next/navigation"
@@ -45,7 +45,7 @@ export default function Page() {
                 </form>
                 <div className={styles["create-account"]}>
                     <p>Don't have an account?</p>
-                    <Link href="#" className={styles["page-button"]}>Create Account</Link>
+                    <Link href="/page-not-implemented" className={styles["page-button"]}>Create Account</Link>
                 </div>
             </div>
         </main>

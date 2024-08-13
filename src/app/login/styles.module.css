@@ -27,9 +27,10 @@
 
 .login {
     background-color: white;
-    padding: 10rem 4rem;
+    padding-inline: 4rem;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 10rem;
     
     & > form {
