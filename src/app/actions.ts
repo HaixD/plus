@@ -9,7 +9,8 @@ export async function login(previousState: string, formData: FormData) {
     if (!username) return "No username was given"
     if (!password) return "No password was given"
 
-    if (!verifyLogin(username.toString(), password.toString())) return "The username and password do not match."
+    const matched = await verifyLogin(username.toString(), password.toString())
+    if (!matched) return "The username and password do not match."
     
     return "success"
 }
