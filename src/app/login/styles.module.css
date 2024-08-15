@@ -49,12 +49,12 @@
     display: grid;
     justify-items: center;
     gap: 1rem;
-    font-size: 1.25rem;
+    font-size: var(--font-size-large);
 }
 
 .error-message {
     color: red;
     text-align: center;
     min-height: 1lh;
-    font-size: 1.25rem;
+    font-size: var(--font-size-regular);
 }

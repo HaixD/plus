@@ -1,4 +1,9 @@
 :root {
+    --font-size-small: 0.75rem;
+    --font-size-regular: 1rem;
+    --font-size-large: 1.5rem;
+    --font-size-larger: 2rem;
+    --font-size-largest: 3rem;
     --background-color: #bfbfdb;
 }
 
@@ -7,6 +12,7 @@ input[type="text"], input[type="password"] {
     padding-block: 0.25rem;
     border: none;
     font-size: 1.5rem;
+    outline: none;
 }
 
 .button {

@@ -1,0 +1,44 @@
+#container {
+    display: grid;
+    justify-items: center;
+    
+    & > h1 {
+        text-align: center;
+        margin-block: 3rem;
+    }
+
+    & form {
+        display: grid;
+        gap: 2rem;
+        
+        & * {
+            display: block;
+        }
+    }
+
+    & > .setting-options {
+        justify-self: stretch;
+        display: grid;
+        gap: 1rem;
+        
+        & > * {
+            display: flex;
+            justify-content: space-between;
+            color: black;
+            text-decoration: none;
+            padding-inline: 1rem;
+            font-size: var(--font-size-large);
+            border: 1px solid transparent;
+            height: 1.5lh;
+    
+            &:hover > :first-child {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .button {
+        font-size: 36px;
+        width: 100%;
+    }
+}

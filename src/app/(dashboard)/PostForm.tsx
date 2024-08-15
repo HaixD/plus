@@ -1,10 +1,8 @@
 "use client"
 
-import Link from "next/link";
 import styles from "./styles.module.css"
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { ChangeEventHandler, forwardRef, useEffect, useRef, useState } from "react";
+import { ChangeEventHandler, forwardRef, useRef, useState } from "react";
 
 export type PostFormProps = {
     onExitClick: () => void
