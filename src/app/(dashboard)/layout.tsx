@@ -59,7 +59,7 @@ export default function Layout({
                         Post
                     </button>
                     <Link
-                        href="#"
+                        href="/settings"
                         style={{
                             marginTop: "auto",
                             marginLeft: "auto",
