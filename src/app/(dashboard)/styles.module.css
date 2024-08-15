@@ -1,0 +1,36 @@
+.page-container {
+    --main-width:55vw;
+    
+    background-color: #0d1445;
+    min-height: 100vh;
+    display: flex;
+    
+    & > * {
+        flex-grow: 1;
+        flex-basis: calc((100vw - var(--main-width)) / 2);
+    }
+
+    & > :nth-child(2) {
+        background-color: #bfbfdb;
+        flex-basis: var(--main-width);
+    }
+}
+
+.navbar {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4rem;
+    font-size: 3rem;
+
+    & .navlinks {
+        width: 100%;
+        padding-left: 4rem;
+    }
+    
+    & a {
+        display: block;
+        text-decoration: none;
+    }
+}
