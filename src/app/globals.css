@@ -1,3 +1,7 @@
+:root {
+    --background-color: #bfbfdb;
+}
+
 input[type="text"], input[type="password"] {
     background-color: #d9d9d9;
     padding-block: 0.25rem;

@@ -1,7 +1,6 @@
 .page {
-    /* background-image: url("/background.jpg"); */
-    background-color: #bfbfdb;
-
+    background-color: var(--background-color);
+    
     & * {
         margin: 0;
     }

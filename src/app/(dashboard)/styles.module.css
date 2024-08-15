@@ -11,7 +11,7 @@
     }
 
     & > :nth-child(2) {
-        background-color: #bfbfdb;
+        background-color: var(--background-color);
         flex-basis: var(--main-width);
     }
 }
