@@ -6,7 +6,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { PostForm } from "./PostForm";
-import { Url } from "url";
 
 export default function Layout({
     children,
