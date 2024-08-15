@@ -1,5 +1,7 @@
 export default function Page() {
     return (
-        <div>settings</div>
+        <>
+            <h1 style={{ textAlign: "center" }}>Your Account</h1>
+        </>
     )
 }
