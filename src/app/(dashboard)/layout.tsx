@@ -1,11 +1,12 @@
 "use client"
 
-import Link from "next/link";
+import Link, { LinkProps } from "next/link";
 import styles from "./styles.module.css"
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { PostForm } from "./PostForm";
+import { Url } from "url";
 
 export default function Layout({
     children,
@@ -14,7 +15,6 @@ export default function Layout({
 }>) {
     const charLimit = 300
 
-    const pathname = usePathname()
     const postFormRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -38,46 +38,11 @@ export default function Layout({
             <div className={styles["page-container"]}>
                 <div className={styles.navbar}>
                     <nav className={styles.navlinks}>
-                        <Link
-                            href="/home"
-                            style={{
-                                fontWeight: pathname === "/home" ? "bold" : "normal"
-                            }}
-                        >
-                            Home
-                        </Link>
-                        <Link
-                            href="/explore"
-                            style={{
-                                fontWeight: pathname === "/explore" ? "bold" : "normal"
-                            }}
-                        >
-                            Explore
-                        </Link>
-                        <Link
-                            href="/notifications"
-                            style={{
-                                fontWeight: pathname === "/notifications" ? "bold" : "normal"
-                            }}
-                        >
-                            Notifications
-                        </Link>
-                        <Link
-                            href="/bookmarks"
-                            style={{
-                                fontWeight: pathname === "/bookmarks" ? "bold" : "normal"
-                            }}
-                        >
-                            Bookmarks
-                        </Link>
-                        <Link
-                            href="/profile"
-                            style={{
-                                fontWeight: pathname === "/profile" ? "bold" : "normal"
-                            }}
-                        >
-                            Profile
-                        </Link>
+                        <NavLink text="Home" href="/home"/>
+                        <NavLink text="Explore" href="/explore"/>
+                        <NavLink text="Notifications" href="/notifications"/>
+                        <NavLink text="Bookmarks" href="/bookmarks"/>
+                        <NavLink text="Profile" href="/profile"/>
                     </nav>
                     <button
                         onClick={showPostForm}
@@ -112,4 +77,26 @@ export default function Layout({
             <PostForm ref={postFormRef} charLimit={charLimit} onExitClick={hidePostForm}/>
         </>
     );
+}
+
+function NavLink({
+    text,
+    href,
+    ...props
+}: Readonly<Exclude<LinkProps, "children"> & {
+    text: string
+}>) {
+    const pathname = usePathname()
+    
+    return (
+        <Link
+            href={href}
+            style={{
+                fontWeight: pathname === href ? "bold" : "normal"
+            }}
+            {...props}
+        >
+            {text}
+        </Link>
+    )
 }
