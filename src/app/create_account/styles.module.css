@@ -1,0 +1,84 @@
+.page {
+    /* background-image: url("/background.jpg"); */
+    background-color: #bfbfdb;
+
+    & * {
+        margin: 0;
+    }
+    
+    & h1 {
+        font-size: 4rem;
+        text-align: center;
+        font-weight: lighter;
+    }
+}
+
+.container {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: auto max-content;
+}
+
+.logo {
+    display: block;
+    justify-self: center;
+    align-self: center;
+}
+
+.login {
+    background-color: white;
+    padding-inline: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10rem;
+    
+    & > form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        & > * {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem
+        }
+
+        & input[type="password"], & input[type="text"] {
+            font-size: 1.5rem;
+            padding-block: 0.25rem;
+            background-color: #d9d9d9;
+            border: none;
+        }
+    }
+}
+
+.page-button {
+    background-color: #c2d9d1;
+    border: none;
+    text-decoration: none;
+    color: black;
+    border-radius: 9999px;
+    padding: .5rem 1rem;
+    display: block;
+    text-align: center;
+    width: fit-content;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.login-existing-account {
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+    font-size: 1.25rem;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    min-height: 1lh;
+    font-size: 1.25rem;
+}

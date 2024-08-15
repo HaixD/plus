@@ -17,12 +17,27 @@ export async function login(previousState: string, formData: FormData) {
 
 export async function createAccount(previousState: string, formData: FormData) {
     const username = formData.get("username")
-    const password = formData.get("password")
+    const pass = formData.get("password")
+    const verifypassword = formData.get("verify-password")
 
     if (!username) return "No username was given"
-    if (!password) return "No password was given"
+    if (!pass) return "No password was given"
 
-    if (!addAccount(username.toString(), password.toString())) return "Email already exists."
+    const matched = await addAccount(username.toString(), pass.toString())
+    if (!addAccount(username.toString(), pass.toString())) return "Email already exists."
     
     return "success"
 }
+
+export async function createAccountpage(previousState: string, formData: FormData) {
+    const username = formData.get("username")
+    const password = formData.get("password")
+    const verifypassword = formData.get("verify-password")
+
+    if (username === "existingusername") return "Username already exists"
+
+    else if (password !== verifypassword) return "Passwords do not match"
+    
+    return "success"
+}
+
