@@ -67,11 +67,11 @@ export default function Layout({
                             marginBottom: "2rem"
                         }}
                     >
-                        <Image src="/settings.svg" alt="settings" width={50} height={50} />
+                        <Image src="/settings.svg" alt="settings" width={50} height={50}/>
                     </Link>
                 </div>
                 <div>{children}</div>
-                <div></div>
+                <div/>
             </div>
             <PostForm ref={postFormRef} charLimit={charLimit} onExitClick={hidePostForm}/>
         </>
