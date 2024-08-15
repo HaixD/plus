@@ -13,7 +13,7 @@ export default function Page() {
     const router = useRouter()
 
     useEffect(() => {
-        if (state === "success") router.push("/page-not-implemented")
+        if (state === "success") router.push("/home")
     }, [state])
     
     return (
@@ -46,7 +46,7 @@ export default function Page() {
                 </form>
                 <div className={styles["create-account"]}>
                     <p>Don't have an account?</p>
-                    <Link href="/page-not-implemented" className={styles["page-button"]}>Create Account</Link>
+                    <Link href="/create_account" className={styles["page-button"]}>Create Account</Link>
                 </div>
             </div>
         </main>
