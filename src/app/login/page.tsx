@@ -35,7 +35,7 @@ export default function Page() {
                     </div>
                     <input 
                         type="submit" 
-                        className={styles["page-button"]} 
+                        className="button" 
                         value="Log In"
                         style={{
                             fontSize: "2rem",
@@ -46,7 +46,7 @@ export default function Page() {
                 </form>
                 <div className={styles["create-account"]}>
                     <p>Don't have an account?</p>
-                    <Link href="/create_account" className={styles["page-button"]}>Create Account</Link>
+                    <Link href="/create_account" className="button">Create Account</Link>
                 </div>
             </div>
         </main>

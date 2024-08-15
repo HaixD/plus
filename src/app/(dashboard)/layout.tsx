@@ -45,15 +45,10 @@ export default function Layout({
                     </nav>
                     <button
                         onClick={showPostForm}
+                        className="button"
                         style={{
                             margin: "auto",
-                            width: "80%",
-                            borderRadius: "9999px",
-                            border: "none",
-                            fontSize: "36px",
-                            padding: "1rem 0 ",
-                            backgroundColor: "#c2d9d1",
-                            cursor: "pointer"
+                            width: "80%"
                         }}
                     >
                         Post

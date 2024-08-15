@@ -43,29 +43,6 @@
             flex-direction: column;
             gap: 0.25rem
         }
-
-        & input[type="password"], & input[type="text"] {
-            font-size: 1.5rem;
-            padding-block: 0.25rem;
-            background-color: #d9d9d9;
-            border: none;
-        }
-    }
-}
-
-.page-button {
-    background-color: #c2d9d1;
-    border: none;
-    text-decoration: none;
-    color: black;
-    border-radius: 9999px;
-    padding: .5rem 1rem;
-    display: block;
-    text-align: center;
-    width: fit-content;
-
-    &:hover {
-        cursor: pointer;
     }
 }
 
