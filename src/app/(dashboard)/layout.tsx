@@ -17,6 +17,7 @@ export default function Layout({
     const [charCount, setCharCount] = useState(0)
     const [previewSrc, setPreviewSrc] = useState<Blob | null>(null)
 
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
     const postFormRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -57,6 +58,20 @@ export default function Layout({
         setCharCount(evt.target.value.length)
     }
 
+    const submitPost = () => {
+        if (!textareaRef.current || (!previewSrc && !textareaRef.current.value)) {
+            console.log("BAD")
+            return
+        }
+        
+        const data = {
+            text: textareaRef.current.value,
+            attachment: previewSrc
+        }
+
+        console.log("SEND", data)
+    }
+    
     return (
         <>
             <div className={styles["page-container"]}>
@@ -153,6 +168,7 @@ export default function Layout({
                         }}
                     />
                     <textarea 
+                        ref={textareaRef}
                         id={styles.text} 
                         onChange={onTextChange}
                         style={{ 
@@ -220,6 +236,7 @@ export default function Layout({
                     <p id={styles.count} style={{ margin: 0 }}>{`${charCount}/${charLimit}`}</p>
                     <button
                         id={styles.send}
+                        onClick={submitPost}
                         style={{
                             borderRadius: "9999px",
                             border: "none",
