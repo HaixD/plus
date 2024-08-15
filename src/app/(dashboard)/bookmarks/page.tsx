@@ -1,5 +1,5 @@
 export default function Page() {
     return (
-        <div>u r drawing bookmarks</div>
+        <div style={{minHeight: "200vh"}}>u r drawing bookmarks</div>
     )
 }

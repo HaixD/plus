@@ -23,6 +23,9 @@
     align-items: center;
     padding-top: 4rem;
     font-size: 3rem;
+    height: 100vh;
+    position: sticky;
+    top: 0;
 
     & .navlinks {
         width: 100%;
