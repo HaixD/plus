@@ -9,7 +9,7 @@ import { useFormState } from "react-dom"
 import { useRouter } from "next/navigation"
 
 export default function Page() {
-    const [loginResponse, formAction] = useFormState<LoginResponse, FormData>(login, { error: "" })
+    const [loginResponse, formAction] = useFormState(login, { error: "" })
     const router = useRouter()
     
     useEffect(() => {
