@@ -4,7 +4,7 @@ import styles from "./styles.module.css"
 import Image from "next/image";
 import { ChangeEventHandler, FormEventHandler, forwardRef, useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
-import { submitPost as action, SuccessfulLoginResponse } from "@/app/actions";
+import { submitPost as action, SubmitPostResponse, SuccessfulLoginResponse } from "@/app/actions";
 import { useRouter } from "next/navigation";
 
 export type PostFormProps = {
@@ -18,7 +18,7 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
 }, ref) {
         const router = useRouter()
         const [account, setAccountInfo] = useState<SuccessfulLoginResponse>({ token: "", username: "username" })
-        const [submitResponse, formAction] = useFormState(action, "")
+        const [submitResponse, formAction] = useFormState(action, {})
         const [charCount, setCharCount] = useState(0)
         const [previewSrc, setPreviewSrc] = useState<Blob | null>(null)
     

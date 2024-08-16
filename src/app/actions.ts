@@ -31,13 +31,17 @@ export async function login(_: LoginResponse, formData: FormData): Promise<Login
     }
 }
 
-export async function submitPost(_: string, formData: FormData) {
+export type SuccessfulSubmitPostResponse = {}
+
+export type SubmitPostResponse = ErrorResponse | SuccessfulSubmitPostResponse
+
+export async function submitPost(_: SubmitPostResponse, formData: FormData): Promise<SubmitPostResponse> {
     const imageFolder = path.join(process.cwd(), "public", "external")
     
     const text = formData.get("text")
     const image = formData.get("image")
 
-    if (!text && !image) return "No text or image provided"
+    if (!text && !image) return { error: "No text or image provided" }
 
     let filename = ""
     if (image) {
@@ -51,7 +55,7 @@ export async function submitPost(_: string, formData: FormData) {
         writeFile(path.join(imageFolder, filename), Buffer.from(buffer))
     }
     
-    return "success"
+    return {}
 }
 
 export async function createAccountpage(previousState: string, formData: FormData) {
