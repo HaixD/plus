@@ -4,17 +4,21 @@ import Image from "next/image"
 import styles from "./styles.module.css"
 import Link from "next/link"
 import { useEffect } from "react"
-import { login } from "@/app/actions"
+import { login, LoginResponse } from "@/app/actions"
 import { useFormState } from "react-dom"
 import { useRouter } from "next/navigation"
 
 export default function Page() {
-    const [state, formAction] = useFormState(login, "")
+    const [loginResponse, formAction] = useFormState<LoginResponse, FormData>(login, { error: "" })
     const router = useRouter()
     
     useEffect(() => {
-        if (state === "success") router.push("/home")
-    }, [state])
+        if (!("error" in loginResponse)) {
+            localStorage.clear()
+            localStorage.setItem("account", JSON.stringify(loginResponse))
+            router.push("/home")
+        }
+    }, [loginResponse])
     
     return (
         <main className={styles.container}>
@@ -31,7 +35,7 @@ export default function Page() {
                         <input type="password" name="password" required/>
                     </div>
                     <div>
-                        <p className={styles["error-message"]}>{state === "success" ? "" : state}</p>
+                        <p className={styles["error-message"]}>{"error" in loginResponse ? loginResponse.error : ""}</p>
                     </div>
                     <input 
                         type="submit" 

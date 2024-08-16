@@ -1,20 +1,34 @@
 "use server"
 
 import { verifyLogin, addAccount } from "@/app/api/database"
+import { PublicAccountInfo } from "@/models/PublicAccountInfo"
 import { writeFile, readdir } from "node:fs/promises"
 import path from "path"
 
-export async function login(previousState: string, formData: FormData) {
+export type BadLoginResponse = {
+    error: string
+}
+
+export type SuccessfulLoginResponse = {
+    token: string
+} & PublicAccountInfo
+
+export type LoginResponse = BadLoginResponse | SuccessfulLoginResponse
+
+export async function login(previousState: LoginResponse, formData: FormData): Promise<LoginResponse> {
     const username = formData.get("username")
     const password = formData.get("password")
 
-    if (!username) return "No username was given"
-    if (!password) return "No password was given"
+    if (!username) return { error: "No username was given" }
+    if (!password) return { error: "No password was given" }
 
-    const matched = await verifyLogin(username.toString(), password.toString())
-    if (!matched) return "The username and password do not match."
+    const matched = await verifyLogin(username as string, password as string)
+    if (!matched) return { error: "The username and password do not match." }
     
-    return "success"
+    return {
+        token: username as string,
+        username: username as string
+    }
 }
 
 export async function createAccount(previousState: string, formData: FormData) {
