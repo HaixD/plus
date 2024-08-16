@@ -31,20 +31,6 @@ export async function login(previousState: LoginResponse, formData: FormData): P
     }
 }
 
-export async function createAccount(previousState: string, formData: FormData) {
-    const username = formData.get("username")
-    const pass = formData.get("password")
-    const verifypassword = formData.get("verify-password")
-
-    if (!username) return "No username was given"
-    if (!pass) return "No password was given"
-
-    const matched = await addAccount(username.toString(), pass.toString())
-    if (!addAccount(username.toString(), pass.toString())) return "Email already exists."
-    
-    return "success"
-}
-
 export async function submitPost(previousState: string, formData: FormData) {
     const imageFolder = path.join(process.cwd(), "public", "external")
     
