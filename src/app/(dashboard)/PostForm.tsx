@@ -2,7 +2,9 @@
 
 import styles from "./styles.module.css"
 import Image from "next/image";
-import { ChangeEventHandler, forwardRef, useRef, useState } from "react";
+import { ChangeEventHandler, FormEventHandler, forwardRef, useRef, useState } from "react";
+import { useFormState } from "react-dom";
+import { submitPost as action } from "@/app/actions";
 
 export type PostFormProps = {
     onExitClick: () => void
@@ -13,23 +15,11 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
     onExitClick,
     charLimit
 }, ref) {
+    const [state, formAction] = useFormState(action, "")
         const [charCount, setCharCount] = useState(0)
         const [previewSrc, setPreviewSrc] = useState<Blob | null>(null)
     
         const textareaRef = useRef<HTMLTextAreaElement>(null)
-    
-        const addAttachment = () => {
-            const fileInput = document.createElement("input")
-            fileInput.type = "file"
-            fileInput.accept = "image/*"
-    
-            fileInput.addEventListener("change", () => {
-                if (!fileInput.files || !fileInput.files[0]) return
-                setPreviewSrc(fileInput.files[0])
-            })
-    
-            fileInput.click()
-        }
     
         const removeAttachment = () => {
             setPreviewSrc(null)
@@ -39,19 +29,14 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
             evt.target.value = evt.target.value.slice(0, charLimit)
             setCharCount(evt.target.value.length)
         }
-    
-        const submitPost = () => {
-            if (!textareaRef.current || (!previewSrc && !textareaRef.current.value)) {
-                console.log("BAD")
-                return
-            }
-            
-            const data = {
-                text: textareaRef.current.value,
-                attachment: previewSrc
-            }
-    
-            console.log("SEND", data)
+
+        const submitPost: FormEventHandler<HTMLFormElement> = (evt) => {
+            evt.preventDefault()
+            const payload = new FormData()
+            payload.append("text", textareaRef.current?.value ?? "")
+            console.log(previewSrc?.type)
+            if (previewSrc) payload.append("image", previewSrc, )
+            formAction(payload)
         }
         
         return (
@@ -60,7 +45,7 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                 onClick={onExitClick}
                 className={styles["post-form-container"]}
             >
-                <div className={styles["post-form"]} onClick={(evt) => { evt.stopPropagation() }}>
+                <form onSubmit={submitPost} className={styles["post-form"]} onClick={(evt) => { evt.stopPropagation() }}>
                     <div id={styles.profile}></div>
                     <p id={styles.name}>username1</p>
                     <Image 
@@ -87,20 +72,27 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                             padding: "0.75rem 1rem"
                         }}
                     />
-                    <button
-                        id={styles["attach-button"]}
-                        onClick={addAttachment}
-                        style={{
-                            width: "fit-content",
-                            height: "fit-content",
-                            background: "none",
-                            border: "none",
-                            cursor: "pointer",
-                            padding: 0,
-                        }}
-                    >
-                        <Image src="/placeholderimage.svg" alt="add image" width={50} height={50}/>
-                    </button>
+                    <div id={styles["attach-button"]}>
+                        <label 
+                            htmlFor="attach-button"
+                            style={{
+                                cursor: "pointer",
+                                userSelect: "none"
+                            }}
+                        >
+                            <input 
+                                id="attach-button"
+                                type="file"
+                                accept="image/*"
+                                onChange={(evt) => {
+                                    if (!evt.target.files || !evt.target.files[0]) return
+                                    setPreviewSrc(evt.target.files[0])
+                                }}
+                                style={{ display: "none" }}
+                            />
+                            <Image src="/placeholderimage.svg" alt="add image" width={50} height={50}/>
+                        </label>
+                    </div>
                     {
                         previewSrc ? 
                             <div
@@ -141,9 +133,10 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                             : null
                     }
                     <p id={styles.count} style={{ margin: 0 }}>{`${charCount}/${charLimit}`}</p>
-                    <button
+                    <input
+                        type="submit"
+                        value="Send"
                         id={styles.send}
-                        onClick={submitPost}
                         style={{
                             borderRadius: "9999px",
                             border: "none",
@@ -152,10 +145,8 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                             backgroundColor: "#c2d9d1",
                             cursor: "pointer"
                         }}
-                    >
-                        Send
-                    </button>
-                </div>
+                    />
+                </form>
             </div>
         );
     }

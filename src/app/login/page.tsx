@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation"
 export default function Page() {
     const [state, formAction] = useFormState(login, "")
     const router = useRouter()
-
+    
     useEffect(() => {
         if (state === "success") router.push("/home")
     }, [state])
