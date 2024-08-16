@@ -5,7 +5,7 @@ import { PublicAccountInfo } from "@/models/PublicAccountInfo"
 import { writeFile, readdir } from "node:fs/promises"
 import path from "path"
 
-export type BadLoginResponse = {
+export type ErrorResponse = {
     error: string
 }
 
@@ -13,9 +13,9 @@ export type SuccessfulLoginResponse = {
     token: string
 } & PublicAccountInfo
 
-export type LoginResponse = BadLoginResponse | SuccessfulLoginResponse
+export type LoginResponse = ErrorResponse | SuccessfulLoginResponse
 
-export async function login(previousState: LoginResponse, formData: FormData): Promise<LoginResponse> {
+export async function login(_: LoginResponse, formData: FormData): Promise<LoginResponse> {
     const username = formData.get("username")
     const password = formData.get("password")
 
@@ -31,7 +31,7 @@ export async function login(previousState: LoginResponse, formData: FormData): P
     }
 }
 
-export async function submitPost(previousState: string, formData: FormData) {
+export async function submitPost(_: string, formData: FormData) {
     const imageFolder = path.join(process.cwd(), "public", "external")
     
     const text = formData.get("text")
