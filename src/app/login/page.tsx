@@ -4,18 +4,19 @@ import Image from "next/image"
 import styles from "./styles.module.css"
 import Link from "next/link"
 import { useEffect } from "react"
-import { login, LoginResponse } from "@/app/actions"
+import { login, SuccessfulLoginResponse } from "@/app/actions"
 import { useFormState } from "react-dom"
 import { useRouter } from "next/navigation"
+import { useLocalStorage } from "usehooks-ts"
 
 export default function Page() {
+    const [_, setAccount] = useLocalStorage<SuccessfulLoginResponse>("account", { token: "", username: "" })
     const [loginResponse, formAction] = useFormState(login, { error: "" })
     const router = useRouter()
     
     useEffect(() => {
         if (!("error" in loginResponse)) {
-            localStorage.clear()
-            localStorage.setItem("account", JSON.stringify(loginResponse))
+            setAccount(loginResponse)
             router.push("/home")
         }
     }, [loginResponse])

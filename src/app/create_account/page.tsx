@@ -8,12 +8,16 @@ import { useFormState } from "react-dom"
 import { useRouter } from "next/navigation"
 
 export default function Page() {
-    const [state, formAction] = useFormState(createAccount, { error: "" })
+    const [signupResponse, formAction] = useFormState(createAccount, { error: "" })
     const router = useRouter()
 
     useEffect(() => {
-        if (!("error" in state)) router.push("/page-not-implemented")
-    }, [state])
+        if (!("error" in signupResponse)) {
+            localStorage.clear()
+            localStorage.setItem("account", JSON.stringify(signupResponse))
+            router.push("/home")
+        }
+    }, [signupResponse])
     
     return (
         <main className={styles.container}>
@@ -36,7 +40,7 @@ export default function Page() {
                         <input type="password" name="verify-password" required/>
                     </div>
                     <div>
-                        <p className={styles["error-message"]}>{"error" in state ? state.error : ""}</p>
+                        <p className={styles["error-message"]}>{"error" in signupResponse ? signupResponse.error : ""}</p>
                     </div>
                     <input 
                         type="submit" 

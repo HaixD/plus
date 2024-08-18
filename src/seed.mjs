@@ -5,16 +5,17 @@ db.serialize(
     () => {
         db.run(`
             CREATE TABLE IF NOT EXISTS "accounts" (
-                "username" TEXT UNIQUE NOT NULL PRIMARY KEY,
+                "id" INTEGER DEFAULT NULL PRIMARY KEY,
+                "username" TEXT UNIQUE NOT NULL,
                 "password" TEXT NOT NULL
             )
         `)
         db.run(`
             CREATE TABLE IF NOT EXISTS "posts" (
-                "id" INTEGER PRIMARY KEY DEFAULT NULL,
+                "id" INTEGER DEFAULT NULL PRIMARY KEY,
                 "content" TEXT,
                 "image_path" TEXT,
-                "poster" TEXT REFERENCES "accounts" ("username"),
+                "poster" INTEGER REFERENCES "accounts" ("id"),
                 "likes" INTEGER NOT NULL DEFAULT 0
             )
         `)
@@ -26,14 +27,20 @@ db.serialize(
         `)
         db.run(`
             CREATE TABLE IF NOT EXISTS "likes" (
-                "username" TEXT REFERENCES "accounts" ("username"),
+                "username" INTEGER REFERENCES "accounts" ("id"),
                 "post" INTEGER REFERENCES "posts" ("id")
             )
         `)
         db.run(`
             CREATE TABLE IF NOT EXISTS "bookmarks" (
-                "username" TEXT REFERENCES "accounts" ("username"),
+                "username" INTEGER REFERENCES "accounts" ("id"),
                 "post" INTEGER REFERENCES "posts" ("id")
+            )
+        `)
+        db.run(`
+            CREATE TABLE IF NOT EXISTS "tokens" (
+                "token" TEXT PRIMARY KEY,
+                "id" INTEGER REFERENCES "accounts" ("id")
             )
         `)
 

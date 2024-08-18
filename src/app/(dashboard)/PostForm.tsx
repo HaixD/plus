@@ -6,6 +6,7 @@ import { ChangeEventHandler, FormEventHandler, forwardRef, useEffect, useRef, us
 import { useFormState } from "react-dom";
 import { submitPost as action, SubmitPostResponse, SuccessfulLoginResponse } from "@/app/actions";
 import { useRouter } from "next/navigation";
+import { useLocalStorage } from "usehooks-ts";
 
 export type PostFormProps = {
     onExitClick: () => void
@@ -16,27 +17,21 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
     onExitClick,
     charLimit
 }, ref) {
-        const router = useRouter()
-        const [account, setAccountInfo] = useState<SuccessfulLoginResponse>({ token: "", username: "username" })
+        const [account, _] = useLocalStorage<SuccessfulLoginResponse>("account", { token: "", username: "" })
+        const [username, setUsername] = useState("")
         const [submitResponse, formAction] = useFormState(action, {})
         const [charCount, setCharCount] = useState(0)
         const [previewSrc, setPreviewSrc] = useState<Blob | null>(null)
     
         const textareaRef = useRef<HTMLTextAreaElement>(null)
-    
-        useEffect(() => {
-            const accountStr = localStorage.getItem("account")
-            if (!accountStr) {
-                router.push("/login")
-                return
-            }
-            
-            setAccountInfo(JSON.parse(accountStr))
-        }, [])
         
         useEffect(() => {
 
         }, [submitResponse])
+
+        useEffect(() => {
+            setUsername(account.username)
+        }, [account])
         
         const removeAttachment = () => {
             setPreviewSrc(null)
@@ -64,7 +59,7 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
             >
                 <form onSubmit={submitPost} className={styles["post-form"]} onClick={(evt) => { evt.stopPropagation() }}>
                     <div id={styles.profile}></div>
-                    <p id={styles.name}>{account.username}</p>
+                    <p id={styles.name}>{username}</p>
                     <Image 
                         id={styles.exit} 
                         onClick={onExitClick}
