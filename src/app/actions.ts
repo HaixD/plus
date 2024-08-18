@@ -58,15 +58,23 @@ export async function submitPost(_: SubmitPostResponse, formData: FormData): Pro
     return {}
 }
 
-export async function createAccountpage(previousState: string, formData: FormData) {
+export type SuccessfulCreateAccountResponse = {}
+
+export type CreateAccountResponse = ErrorResponse | SuccessfulCreateAccountResponse
+
+export async function createAccount(_: CreateAccountResponse, formData: FormData): Promise<CreateAccountResponse> {
     const username = formData.get("username")
     const password = formData.get("password")
     const verifypassword = formData.get("verify-password")
 
-    if (username === "existingusername") return "Username already exists"
-
-    else if (password !== verifypassword) return "Passwords do not match"
+    if (!username) return { error: "No username was given" }
+    if (!password) return { error: "No password was given" }
+    if (!verifypassword) return { error: "No password verification was given" }
+    if (password !== verifypassword) return { error: "Passwords do not match" }
     
-    return "success"
+    const success = await addAccount(username as string, password as string)
+    if (!success) return { error: "Username already exists" }
+    
+    return {}
 }
 

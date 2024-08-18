@@ -2,18 +2,17 @@
 
 import Image from "next/image"
 import styles from "./styles.module.css"
-import Link from "next/link"
 import { useEffect } from "react"
-import { createAccountpage } from "@/app/actions"
+import { createAccount } from "@/app/actions"
 import { useFormState } from "react-dom"
 import { useRouter } from "next/navigation"
 
 export default function Page() {
-    const [state, formAction] = useFormState(createAccountpage, "")
+    const [state, formAction] = useFormState(createAccount, { error: "" })
     const router = useRouter()
 
     useEffect(() => {
-        if (state === "success") router.push("/page-not-implemented")
+        if (!("error" in state)) router.push("/page-not-implemented")
     }, [state])
     
     return (
@@ -37,7 +36,7 @@ export default function Page() {
                         <input type="password" name="verify-password" required/>
                     </div>
                     <div>
-                        <p className={styles["error-message"]}>{state === "success" ? "" : state}</p>
+                        <p className={styles["error-message"]}>{"error" in state ? state.error : ""}</p>
                     </div>
                     <input 
                         type="submit" 
