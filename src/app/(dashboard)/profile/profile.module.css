@@ -1,0 +1,77 @@
+.maincontainer {
+    display: grid;
+    grid-template-areas: 
+    "profpic                  edit"
+    "username                    ."
+    "bio                       bio"
+    "date                        .";
+
+    row-gap: 1rem;
+
+    background-color: lavender;
+    padding:30px 40px 30px 40px;
+}
+
+.imagecontainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding:0px 40px 10px 40px;
+
+    & h1 {
+        font-size: 1rem;
+    
+    }
+}
+
+.iconedit {
+    right: 0; 
+    top: 100;  
+  }
+
+.biocontainer {
+    padding:60px 30px 60px 40px;
+
+    & p {
+        font-size: 1rem;
+    }
+}
+
+.joincontainer {
+    padding:0px 40px 10px 40px;
+
+    & p {
+        font-size: 1rem;
+    }
+}
+
+.buttoncontainer {
+    background-color: white;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items:center;
+
+    column-gap:1px;
+    background-color: black;
+
+    & a {
+        width:100%;
+        text-align:center;
+        text-decoration:none;
+        background-color:white;
+
+        &:hover{
+            text-decoration: underline;
+            background-color: lightgrey;
+        } 
+    }
+}
+
+
+.logo {
+    display: block;
+    justify-self: center;
+    align-self: center;
+}
