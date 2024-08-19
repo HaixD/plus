@@ -1,6 +1,5 @@
 "use client"
 
-import styles from "../styles.module.css"
 import { LabeledInput } from "@/components/LabeledInput"
 import { ErrorMessage } from "@/components/ErrorMessage"
 import Link from "next/link"
