@@ -5,6 +5,8 @@
     --font-size-larger: 2rem;
     --font-size-largest: 3rem;
     --background-color: #bfbfdb;
+    --error-color: red;
+    --gap-small: 0.25rem;
 }
 
 input[type="text"], input[type="password"] {
