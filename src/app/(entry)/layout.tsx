@@ -9,7 +9,13 @@ export default function Layout({
     children: ReactNode
 }>) {
     return (
-        <main id={styles["page-container"]}>
+        <main
+            style={{
+                minHeight: "100vh",
+                display: "grid",
+                gridTemplateColumns: "70vw auto"
+            }}
+        >
             <Image 
                 src="/logo1.png" 
                 alt="logo" 
@@ -20,7 +26,15 @@ export default function Layout({
                     placeSelf: "center"
                 }}
             />
-            <div id={styles.content}>
+            <div
+                style={{
+                    backgroundColor: "white",
+                    paddingInline: "4rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-evenly"
+                }}
+            >
                 {children}
             </div>
         </main>

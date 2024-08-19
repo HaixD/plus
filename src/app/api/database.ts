@@ -1,8 +1,8 @@
 import sqlite3 from "sqlite3"
 
-export async function setToken(userID: number, token: string) {
+export async function addToken(userID: number, token: string) {
     const db = new sqlite3.Database("plus.db")
-    return await new Promise<void>((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
         db.get(`
             INSERT INTO "tokens" ("token", "id")
             VALUES (?, ?)
@@ -11,9 +11,29 @@ export async function setToken(userID: number, token: string) {
         `, [token, userID], (error, row) => {
             if (error || row === undefined) {
                 reject("Error occured when generating credentials")
+            } else {
+                resolve()
             }
         })
     })
+}
+
+export async function updateToken(userID: number, token: string) {
+    const db = new sqlite3.Database("plus.db")
+    await new Promise<void>((resolve, reject) => {
+        db.run(`
+            DELETE FROM "tokens"
+            WHERE "id" = ?
+            RETURNING *
+        `, [userID], (error) => {
+            if (error) {
+                reject("Error occured when generating credentials")
+            } else {
+                resolve()
+            }
+        })
+    })
+    await addToken(userID, token)
 }
 
 export async function getUserID(token: string) {
@@ -77,7 +97,7 @@ export async function changeUsername(token: string, newUsername: string) {
     const posterID = await getUserID(token)
     
     const db = new sqlite3.Database("plus.db")
-    return await new Promise<void>((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
         db.get(`
             UPDATE "accounts"
             SET
@@ -85,6 +105,34 @@ export async function changeUsername(token: string, newUsername: string) {
             WHERE "id" = ?
             RETURNING *
         `, [newUsername, posterID], (error, row: any) => {
+            if (error) {
+                if ("errno" in error && error.errno === 19) {
+                    reject("Username is already taken")
+                } else {
+                    reject("Error occured when changing account username")
+                }
+            } else if (row === undefined) {
+                reject("Error occured when changing account username")
+            } else {
+                resolve()
+            }
+        })
+        db.close()
+    })
+}
+
+export async function changePassword(token: string, newPassword: string) {
+    const posterID = await getUserID(token)
+    
+    const db = new sqlite3.Database("plus.db")
+    await new Promise<void>((resolve, reject) => {
+        db.get(`
+            UPDATE "accounts"
+            SET
+                "password" = ?
+            WHERE "id" = ?
+            RETURNING *
+        `, [newPassword, posterID], (error, row: any) => {
             if (error || row === undefined) {
                 reject("Error occured when changing account username")
             } else {
@@ -97,7 +145,7 @@ export async function changeUsername(token: string, newUsername: string) {
 
 export async function addPost(posterID: number, content: string, imagePath: string) {
     const db = new sqlite3.Database("plus.db")
-    return await new Promise<boolean>((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
         db.get(`
             INSERT INTO "posts" ("poster", "content", "image_path")
             VALUES
@@ -105,6 +153,8 @@ export async function addPost(posterID: number, content: string, imagePath: stri
         `, [posterID, content, imagePath], (error, _) => {
             if (error) {
                 reject("error occured when adding post")
+            } else {
+                resolve()
             }
         })
         db.close()

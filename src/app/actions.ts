@@ -1,18 +1,30 @@
 "use server"
 
-import { verifyLogin, addAccount, changeUsername as dbChangeUsername, setToken } from "@/app/api/database"
+import { 
+    verifyLogin, 
+    addAccount, 
+    changeUsername as dbChangeUsername, 
+    changePassword as dbChangePassword,
+    addToken, 
+    updateToken,
+    getUserID
+} from "@/app/api/database"
 import { PublicAccountInfo } from "@/models/PublicAccountInfo"
 import { writeFile, readdir } from "node:fs/promises"
-import { setTimeout } from "node:timers/promises"
+import { randomBytes } from "node:crypto"
 import path from "path"
+
+const TOKEN_SIZE = 48
+
+function generateToken() {
+    return randomBytes(TOKEN_SIZE).toString("hex")
+}
 
 export type ErrorResponse = {
     error: string
 }
 
-export type SuccessfulLoginResponse = {
-    token: string
-} & PublicAccountInfo
+export type SuccessfulLoginResponse = SuccessfulChangePasswordResponse & PublicAccountInfo
 
 export type LoginResponse = ErrorResponse | SuccessfulLoginResponse
 
@@ -20,8 +32,8 @@ async function createLoginResponse(userIDPromise: Promise<number>, username: str
     let token = ""
     try {
         const userID = await userIDPromise
-        token = username // TEMPORARY SOLUTION
-        setToken(userID, token)
+        token = generateToken()
+        addToken(userID, token)
     } catch (error) {
         return { error: error as string }
     }
@@ -97,15 +109,42 @@ export async function changeUsername(_: ChangeUsernameResponse, formData: FormDa
     const token = formData.get("token") as string | null
 
     if (!username) return { error: "No username was given" }
+    if (/[^\w]|_/.test(username)) return { error: "Username cannot contain special characters" }
     if (!token) return { error: "Credentials are invalid, please login again" }
     
     try {
-        console.log("STAR")
         await dbChangeUsername(token, username)
     } catch (error) {
-        console.log("BAD")
         return { error: error as string }
     }
     
     return { username }
+}
+
+export type SuccessfulChangePasswordResponse = {
+    token: string
+}
+
+export type ChangePasswordResponse = ErrorResponse | SuccessfulChangePasswordResponse
+
+export async function changePassword(_: ChangePasswordResponse, formData: FormData): Promise<ChangePasswordResponse> {
+    const password = formData.get("password") as string | null
+    const verifypassword = formData.get("verify-password") as string | null
+    const oldToken = formData.get("token") as string | null
+
+    if (!password) return { error: "No password was given" }
+    if (!verifypassword) return { error: "No password verification was given" }
+    if (password !== verifypassword) return { error: "Passwords do not match" }
+    if (!oldToken) return { error: "Credentials are invalid, please login again" }
+    
+    let token = ""
+    try {
+        await dbChangePassword(oldToken, password)
+        token = generateToken()
+        await updateToken(await getUserID(oldToken), token)
+    } catch (error) {
+        return { error: error as string }
+    }
+    
+    return { token }
 }

@@ -1,4 +1,4 @@
-import styles from "./styles.module.css"
+import "./styles.css"
 
 export default function Layout({
     children,
@@ -6,7 +6,14 @@ export default function Layout({
     children: React.ReactNode;
 }>) {
     return (
-        <div id={styles.container}>
+        <div
+            style={{
+                display: "grid",
+                justifyItems: "stretch",
+                width: "100%",
+                marginInline: "auto"
+            }}
+        >
             {children}
         </div>
     )

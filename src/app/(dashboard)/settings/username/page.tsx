@@ -1,10 +1,11 @@
 "use client"
 
 import { useFormState } from "react-dom"
-import styles from "../styles.module.css"
 import { changeUsername, SuccessfulLoginResponse } from "@/app/actions"
 import { useEffect } from "react"
 import { useLocalStorage } from "usehooks-ts"
+import { LabeledInput } from "@/components/LabeledInput"
+import { ErrorMessage } from "@/components/ErrorMessage"
 
 export default function Page() {
     const [account, setAccount] = useLocalStorage<SuccessfulLoginResponse>("account", { token: "", username: "" })
@@ -13,8 +14,6 @@ export default function Page() {
     useEffect(() => {
         if (!("error" in changeUsernameResponse)) {
             setAccount({ ...account, username: changeUsernameResponse.username })
-        } else if (changeUsernameResponse.error) {
-            console.log(changeUsernameResponse.error)
         }
     }, [changeUsernameResponse])
     
@@ -28,11 +27,9 @@ export default function Page() {
         <>
             <h1>Change Username</h1>
             <form action={submitForm}>
-                <div>
-                    <label htmlFor="username">Username</label>
-                    <input type="text" name="username" required/>
-                </div>
-                <input className={`button ${styles.button}`} type="submit" value="Update"/>
+                <LabeledInput text="Username" type="text"/>
+                <ErrorMessage responseState={changeUsernameResponse}/>
+                <input className="button" type="submit" value="Update"/>
             </form>
         </>
 
