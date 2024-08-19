@@ -9,7 +9,7 @@ export default function Layout({
     children: ReactNode
 }>) {
     return (
-        <main id={styles.container}>
+        <main id={styles["page-container"]}>
             <Image 
                 src="/logo1.png" 
                 alt="logo" 
