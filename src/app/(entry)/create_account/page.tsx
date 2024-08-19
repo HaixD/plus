@@ -25,7 +25,7 @@ export default function Page() {
             <form action={formAction}>
                 <LabeledInput text="Username" type="text" style={{ width: "100%" }}/>
                 <LabeledInput text="Password" type="password" style={{ width: "100%" }}/>
-                <LabeledInput text="Verify password" type="password" style={{ width: "100%" }}/>
+                <LabeledInput text="Verify Password" type="password" style={{ width: "100%" }}/>
                 <ErrorMessage responseState={signupResponse}/>
                 <input type="submit" className="button" value="Sign Up"/>
             </form>
