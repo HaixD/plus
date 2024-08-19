@@ -73,8 +73,10 @@ export async function createAccount(_: LoginResponse, formData: FormData): Promi
     const username = formData.get("username") as string | null
     const password = formData.get("password") as string | null
     const verifypassword = formData.get("verify-password") as string | null
+    var special = /[^\w]|_/ 
 
     if (!username) return { error: "No username was given" }
+    if (special.test(username)) return { error: "Username cannot contain special characters" }
     if (!password) return { error: "No password was given" }
     if (!verifypassword) return { error: "No password verification was given" }
     if (password !== verifypassword) return { error: "Passwords do not match" }
