@@ -17,8 +17,7 @@ export default function Layout({
                 height={338}
                 style={{
                     display: "block",
-                    justifySelf: "center",
-                    alignSelf: "center"
+                    placeSelf: "center"
                 }}
             />
             <div id={styles.content}>
