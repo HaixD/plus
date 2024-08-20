@@ -53,6 +53,7 @@
 
     & > .post-form {
         --small-column-width: 60px;
+        --medium-collumn-width: 150px;
         
         width: 65rem;
         border-radius: 32px;
@@ -60,10 +61,12 @@
         min-height: 50vh;
         display: grid;
         grid-template-areas: 
-            "profile       name    ....  exit"
-            "text          text    text  text"
-            "attach-button preview count send";
-        grid-template-columns: var(--small-column-width) auto auto max-content;
+            "profile       name    ..... ..... exit"
+            "text          text    text  text  text"
+            "attach-button preview error count send"
+        ;
+
+        grid-template-columns: var(--small-column-width) var(--medium-collumn-width) auto 7ch max-content;
         grid-template-rows: max-content auto  var(--small-column-width);
         gap: 1rem;
         padding: 2rem;
@@ -105,6 +108,7 @@
         & > #preview {
             grid-area: preview;
             max-height: var(--small-column-width);
+            max-width: var(--medium-collumn-width);
 
             & * {
                 max-height: var(--small-column-width);
@@ -113,10 +117,15 @@
 
         & > #count {
             grid-area: count;
-            justify-self: flex-end;
+            justify-self: center;
         }
+
         & > #send {
             grid-area: send;
+        }
+
+        & > #error {
+            grid-area: error;
         }
     }
 }

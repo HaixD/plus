@@ -2,11 +2,12 @@
 
 import styles from "./styles.module.css"
 import Image from "next/image";
-import { ChangeEventHandler, FormEventHandler, forwardRef, useEffect, useRef, useState } from "react";
+import { ChangeEventHandler, FormEventHandler, forwardRef, HTMLAttributes, TextareaHTMLAttributes, useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 import { submitPost as action, SubmitPostResponse, SuccessfulLoginResponse } from "@/app/actions";
 import { useRouter } from "next/navigation";
 import { useLocalStorage } from "usehooks-ts";
+import { ErrorMessage } from "@/components/ErrorMessage";
 
 export type PostFormProps = {
     onExitClick: () => void
@@ -19,16 +20,22 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
 }, ref) {
         const [account, _] = useLocalStorage<SuccessfulLoginResponse>("account", { token: "", username: "" })
         const [username, setUsername] = useState("")
-        const [submitResponse, formAction] = useFormState(action, {})
-        const [charCount, setCharCount] = useState(0)
+        const [text, setText] = useState("")
         const [previewSrc, setPreviewSrc] = useState<Blob | null>(null)
+        const [submitResponse, formAction] = useFormState(action, {})
     
-        const textareaRef = useRef<HTMLTextAreaElement>(null)
-        
+        const close = () => {
+            setText("")
+            setPreviewSrc(null)
+            onExitClick()
+        }
+
         useEffect(() => {
-
+            if (!("error" in submitResponse)) {
+                close()
+            }
         }, [submitResponse])
-
+        
         useEffect(() => {
             setUsername(account.username)
         }, [account])
@@ -36,33 +43,25 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
         const removeAttachment = () => {
             setPreviewSrc(null)
         }
-    
-        const onTextChange: ChangeEventHandler<HTMLTextAreaElement> = (evt) => {
-            evt.target.value = evt.target.value.slice(0, charLimit)
-            setCharCount(evt.target.value.length)
-        }
 
-        const submitPost: FormEventHandler<HTMLFormElement> = (evt) => {
-            evt.preventDefault()
-            const payload = new FormData()
-            payload.append("text", textareaRef.current?.value ?? "")
-            console.log(previewSrc?.type)
-            if (previewSrc) payload.append("image", previewSrc, )
+        const submitPost = (payload: FormData) => {
+            payload.append("token", account.token)
+            if (previewSrc === null) payload.delete("image")
             formAction(payload)
         }
         
         return (
             <div 
                 ref={ref} 
-                onClick={onExitClick}
+                onClick={close}
                 className={styles["post-form-container"]}
             >
-                <form onSubmit={submitPost} className={styles["post-form"]} onClick={(evt) => { evt.stopPropagation() }}>
+                <form action={submitPost} className={styles["post-form"]} onClick={(evt) => { evt.stopPropagation() }}>
                     <div id={styles.profile}></div>
                     <p id={styles.name}>{username}</p>
                     <Image 
                         id={styles.exit} 
-                        onClick={onExitClick}
+                        onClick={close}
                         src="/exit.svg" 
                         alt="exit" 
                         width={50} 
@@ -71,31 +70,23 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                             cursor: "pointer"
                         }}
                     />
-                    <textarea 
-                        ref={textareaRef}
-                        id={styles.text} 
-                        onChange={onTextChange}
-                        style={{ 
-                            backgroundColor: "transparent", 
-                            border: "1px solid black", 
-                            outline: "none",
-                            resize: "none",
-                            fontSize: "1.25rem",
-                            padding: "0.75rem 1rem"
-                        }}
+                    <CappedTextArea 
+                        id={styles.text}
+                        cap={charLimit}
+                        value={text}
+                        onChange={evt => setText(evt.target.value)}
+                        name="text"
                     />
                     <div id={styles["attach-button"]}>
                         <label 
                             htmlFor="attach-button"
-                            style={{
-                                cursor: "pointer",
-                                userSelect: "none"
-                            }}
+                            style={{ cursor: "pointer" }}
                         >
                             <input 
                                 id="attach-button"
                                 type="file"
                                 accept="image/*"
+                                name="image"
                                 onChange={(evt) => {
                                     if (!evt.target.files || !evt.target.files[0]) return
                                     setPreviewSrc(evt.target.files[0])
@@ -110,16 +101,12 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                             <div
                                 id={styles.preview} 
                                 className={styles.attachment}
-                                style={{
-                                    width: "max-content"
-                                }}
+                                style={{ width: "max-content" }}
                             >
                                 <img 
                                     src={URL.createObjectURL(previewSrc)} 
                                     alt="image preview" 
-                                    style={{
-                                        cursor: "pointer"
-                                    }}
+                                    style={{ cursor: "pointer" }}
                                 />
                                 <div
                                     onClick={removeAttachment}
@@ -144,22 +131,45 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                             </div>
                             : null
                     }
-                    <p id={styles.count} style={{ margin: 0 }}>{`${charCount}/${charLimit}`}</p>
+                    <ErrorMessage id={styles["error"]} responseState={submitResponse}/>
+                    <p id={styles.count} style={{ margin: 0 }}>{`${text.length}/${charLimit}`}</p>
                     <input
                         type="submit"
                         value="Send"
                         id={styles.send}
-                        style={{
-                            borderRadius: "9999px",
-                            border: "none",
-                            fontSize: "24px",
-                            padding: "0.5rem 2rem",
-                            backgroundColor: "#c2d9d1",
-                            cursor: "pointer"
-                        }}
+                        className="button"
+                        style={{ fontSize: "var(--font-size-large)" }}
                     />
                 </form>
             </div>
         );
     }
 )
+
+function CappedTextArea({
+    cap,
+    style={},
+    onChange,
+    ...props
+}: Readonly<{
+    cap: number
+} & TextareaHTMLAttributes<HTMLTextAreaElement>>) {
+    return (
+        <textarea
+            onChange={evt => {
+                evt.target.value = evt.target.value.slice(0, cap)
+                if (onChange) onChange(evt)
+            }}
+            style={{ 
+                backgroundColor: "transparent", 
+                border: "1px solid black", 
+                outline: "none",
+                resize: "none",
+                fontSize: "1.25rem",
+                padding: "0.75rem 1rem",
+                ...style
+            }}
+            {...props}
+        />
+    )
+}

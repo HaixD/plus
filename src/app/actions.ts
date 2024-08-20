@@ -5,6 +5,7 @@ import {
     addAccount, 
     changeUsername as dbChangeUsername, 
     changePassword as dbChangePassword,
+    addPost,
     addToken, 
     updateToken,
     getUserID
@@ -61,24 +62,32 @@ export type SubmitPostResponse = ErrorResponse | SuccessfulSubmitPostResponse
 export async function submitPost(_: SubmitPostResponse, formData: FormData): Promise<SubmitPostResponse> {
     const imageFolder = path.join(process.cwd(), "public", "external")
     
-    const text = formData.get("text")
-    const image = formData.get("image")
-
+    const text = formData.get("text") as string | null
+    const image = formData.get("image") as Blob | null
+    const token = formData.get("token") as string | null
+    
     if (!text && !image) return { error: "No text or image provided" }
+    if (!token) return { error: "Credentials are invalid, please login again" }
 
-    let filename = ""
+    let filename: string | null = null
     if (image) {
-        const imageBlob = image as Blob
-        console.log(imageBlob.type)
-        const buffer = await imageBlob.arrayBuffer()
+        if (image.size === 0 || !/^image/.test(image.type)) return { error: "Image cannot be accepted" }
+        
+        const buffer = await image.arrayBuffer()
 
         const dirLength = (await readdir(imageFolder)).length
-        filename = `${dirLength}.${imageBlob.type.match(/(?<=image\/).*/) ?? "blob"}`
+        filename = `${dirLength}.${image.type.match(/(?<=image\/).*/) ?? "blob"}`
 
         writeFile(path.join(imageFolder, filename), Buffer.from(buffer))
     }
     
-    return {}
+    try {
+        await addPost(token, text, filename)
+    } catch (error) {
+        return { error }
+    }
+    
+    return { }
 }
 
 export async function createAccount(_: LoginResponse, formData: FormData): Promise<LoginResponse> {

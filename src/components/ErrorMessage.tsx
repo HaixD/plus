@@ -1,16 +1,16 @@
 import { ErrorResponse } from "@/app/actions"
-import { CSSProperties } from "react"
+import { CSSProperties, HTMLAttributes } from "react"
 
 type Response<T> = T | ErrorResponse
 
 export type ErrorMessageProps<T extends object> = {
     responseState: Response<T>
-    style?: CSSProperties
-}
+} & HTMLAttributes<HTMLParagraphElement>
 
 export function ErrorMessage<T extends object>({
     responseState,
-    style={}
+    style={},
+    ...props
 }: Readonly<ErrorMessageProps<T>>) {
     return (
         <p
@@ -19,8 +19,10 @@ export function ErrorMessage<T extends object>({
                 textAlign: "center",
                 minHeight: "1lh",
                 fontSize: "var(--font-size-regular)",
+                margin: 0,
                 ...style
             }}
+            {...props}
         >
             {"error" in responseState ? responseState.error : null}
         </p>
