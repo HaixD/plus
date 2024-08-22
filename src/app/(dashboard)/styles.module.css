@@ -1,7 +1,7 @@
-.page-container {
+#page-container {
     --main-width:50vw;
     
-    background-color: #0d1445;
+    background-color: var(--background-color-navbar);
     min-height: 100vh;
     display: flex;
     
@@ -16,136 +16,191 @@
     }
 }
 
-.navbar {
-    color: white;
+#navbar {
+    color: var(--color-navbar);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding-top: 4rem;
+    align-items: stretch;
+    padding-top: var(--padding-larger);
     font-size: var(--font-size-largest);
     height: 100vh;
     position: sticky;
     top: 0;
+}
 
-    & > .navlinks {
-        width: 100%;
-        padding-left: 4rem;
-    }
-    
+#navlinks {
     & a {
         display: block;
         text-decoration: none;
-    }
-}
-
-.post-form-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    /* display: flex; */
-    display: none;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.8);
-    cursor: pointer;
-
-    & > .post-form {
-        --small-column-width: 60px;
-        --medium-collumn-width: 150px;
-        
-        width: 65rem;
-        border-radius: 32px;
-        background-color: #e0d6d9;
-        min-height: 50vh;
-        display: grid;
-        grid-template-areas: 
-            "profile       name    ..... ..... exit"
-            "text          text    text  text  text"
-            "attach-button preview error count send"
-        ;
-
-        grid-template-columns: var(--small-column-width) var(--medium-collumn-width) auto 7ch max-content;
-        grid-template-rows: max-content auto  var(--small-column-width);
-        gap: 1rem;
-        padding: 2rem;
-        align-items: center;
-        cursor: default;
-
-        & > #profile {
-            grid-area: profile;
-            width: var(--small-column-width);
-            height: var(--small-column-width);
-            background-color: black;
-            border-radius: var(--small-column-width);
-        }
-
-        & > #name {
-            grid-area: name;
-            margin: 0;
-            
-            &::before {
-                content: "@"
-            }
-        }
-
-        & > #exit {
-            grid-area: exit;
-            justify-self: flex-end;
-        }
-
-        & > #text {
-            width: 100%;
-            height: 100%;
-            grid-area: text;
-        }
-
-        & > #attach-button {
-            grid-area: attach-button;
-        }
-
-        & > #preview {
-            grid-area: preview;
-            max-height: var(--small-column-width);
-            max-width: var(--medium-collumn-width);
-
-            & * {
-                max-height: var(--small-column-width);
-            }
-        }
-
-        & > #count {
-            grid-area: count;
-            justify-self: center;
-        }
-
-        & > #send {
-            grid-area: send;
-        }
-
-        & > #error {
-            grid-area: error;
-        }
-    }
-}
-
-.attachment {
-    display: grid;
-    grid-template-areas: "content";
-    place-items: center;
-
-    & > * {
-        grid-area: content;
-    }
-
-    & > *:not(:first-child) {
-        opacity: 0;
-        transition: 0.25s;
-        cursor: pointer;
+        padding-left: var(--padding-larger);
+        color: white;
 
         &:hover {
-            opacity: 100%;
+            text-decoration: underline;
         }
+
+        &.selected {
+            font-weight: bold;
+        }
+    }
+}
+
+#extra-options {
+    display: grid;
+    grid-template-rows: 2fr 1fr max-content;
+    height: 100%;
+}
+
+#post-button {
+    margin: auto;
+}
+
+#settings-menu {
+    display: grid;
+    border-radius: var(--border-radius-medium);
+    background-color: #d9d9d9;
+    color: black;
+    font-size: var(--font-size-large);
+    contain: paint;
+    width: 80%;
+    margin-inline: auto;
+
+    & > * {
+        padding-left: var(--padding-large);
+        display: grid;
+        grid-template-columns: max-content auto;
+        column-gap: var(--gap-medium);
+        text-decoration: none;
+        align-items: center;
+
+        &:hover {
+            text-decoration: underline;
+            background-color: gray;
+        }
+
+        & > * {
+            margin: 0;
+        }
+    }
+}
+
+#settings-button {
+    margin: auto 2rem 2rem auto;
+    grid-row: 4 / 3;
+    width: var(profile-scale-small);
+    height: var(profile-scale-small);
+    cursor: pointer;
+}
+
+#post-form {
+    display: grid;
+    grid-template-areas: 
+        "profile       name    ..... ..... exit"
+        "text          text    text  text  text"
+        "attach-button preview error count send"
+    ;
+
+    grid-template-columns: var(--profile-scale-small) var(--image-scale-small) auto 7ch max-content;
+    grid-template-rows: max-content auto  var(--profile-scale-small);
+    gap: var(--gap-large);
+
+    & > #profile {
+        grid-area: profile;
+        width: var(--profile-scale-small);
+        height: var(--profile-scale-small);
+        border-radius: var(--border-radius-circle);
+    }
+
+    & > #name {
+        grid-area: name;
+        margin: 0;
+        display: grid;
+        align-items: center;
+        font-size: var(--font-size-large);
+    }
+
+    & > #exit {
+        grid-area: exit;
+        justify-self: end;
+        width: var(--icon-scale);
+        height: var(--icon-scale);
+        cursor: pointer;
+    }
+
+    & > #text {
+        grid-area: text;
+        background-color: transparent;
+        border: var(--border-text);
+        outline: none;
+        font-size: var(--font-size-medium);
+        padding: var(--padding-small) var(--padding-medium);
+    }
+
+    & > #attach-button {
+        grid-area: attach-button;
+
+        & * {
+            cursor: pointer;
+            width: var(--profile-scale-small);
+            height: var(--profile-scale-small);
+        }
+
+        & input[type="file"] {
+            display: none;
+        }
+    }
+
+    & > #preview {
+        grid-area: preview;
+        display: grid;
+        grid-template-areas: "content";
+        place-items: center;
+        max-width: max-content;
+    
+        & > * {
+            grid-area: content;
+            height: var(--profile-scale-small);
+        }
+        
+        & > :not(:first-child) {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.25s;
+    
+            &:hover {
+                opacity: 100%;
+            }
+
+            & #exit {
+                filter: brightness(0) invert(1);
+                width: var(--icon-scale);
+                height: var(--icon-scale);
+            }
+        }
+    }
+
+    & > #error {
+        grid-area: error;
+        place-self: center;
+    }
+
+    & > #count {
+        grid-area: count;
+        place-self: center;
+        margin: 0;
+    }
+
+    & > #send {
+        grid-area: send;
+        font-size: var(--font-size-large)
+    }
+
+    & > #error {
+        grid-area: error;
     }
 }

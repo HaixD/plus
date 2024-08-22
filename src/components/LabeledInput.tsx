@@ -18,7 +18,7 @@ export function LabeledInput({
             style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "var(--gap-small)",
+                gap: "var(--gap-smaller)",
                 ...style
             }}
             {...props}

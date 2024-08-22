@@ -15,6 +15,10 @@ export default function Page() {
     const router = useRouter()
     
     useEffect(() => {
+        setAccount({ token: "", username: "" })
+    }, [])
+    
+    useEffect(() => {
         if (!("error" in loginResponse)) {
             setAccount(loginResponse)
             router.push("/home")
