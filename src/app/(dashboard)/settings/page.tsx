@@ -1,9 +1,10 @@
+import styles from "./styles.module.css"
 import Link, { LinkProps } from "next/link";
 
 export default function Page() {    
     return (
         <>
-            <h1>Your Account</h1>
+            <h1 id={styles.title}>Your Account</h1>
             <div
                 style={{
                     justifySelf: "stretch",
@@ -25,7 +26,7 @@ function SettingOption({
     text: string
 }) {
     return (
-        <Link className="setting-option" {...props}>
+        <Link className={styles["setting-option"]} {...props}>
             <span>{text}</span>
             <span>{">"}</span>
         </Link>

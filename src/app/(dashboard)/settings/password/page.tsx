@@ -1,5 +1,6 @@
 "use client"
 
+import styles from "../styles.module.css"
 import { LabeledInput } from "@/components/LabeledInput"
 import { ErrorMessage } from "@/components/ErrorMessage"
 import { changePassword, SuccessfulLoginResponse } from "@/app/actions"
@@ -25,12 +26,12 @@ export default function Page() {
     
     return (
         <>
-            <h1>Change Password</h1>
-            <form action={submitForm}>
+            <h1 id={styles.title}>Change Password</h1>
+            <form id={styles.form} action={submitForm}>
                 <LabeledInput text="Password" type="password"/>
                 <LabeledInput text="Verify Password" type="password"/>
                 <ErrorMessage responseState={changePasswordResponse}/>
-                <input className="button" type="submit" value="Update"/>
+                <input className={`button ${styles.button}`} type="submit" value="Update"/>
             </form>
         </>
 

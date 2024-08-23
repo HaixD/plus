@@ -1,6 +1,7 @@
 "use client"
 
 import { useFormState } from "react-dom"
+import styles from "../styles.module.css"
 import { changeUsername, SuccessfulLoginResponse } from "@/app/actions"
 import { useEffect } from "react"
 import { useLocalStorage } from "usehooks-ts"
@@ -25,11 +26,11 @@ export default function Page() {
     
     return (
         <>
-            <h1>Change Username</h1>
-            <form action={submitForm}>
+            <h1 id={styles.title}>Change Username</h1>
+            <form id={styles.form} action={submitForm}>
                 <LabeledInput text="Username" type="text"/>
                 <ErrorMessage responseState={changeUsernameResponse}/>
-                <input className="button" type="submit" value="Update"/>
+                <input className={`button ${styles.button}`} type="submit" value="Update"/>
             </form>
         </>
 
