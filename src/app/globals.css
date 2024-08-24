@@ -39,7 +39,7 @@
     --border-radius-medium: 32px;
     --border-radius-circle: 50%;
 
-    --border-text: 1px solid black
+    --border-text: 1px solid black;
 }
 
 input[type="text"], input[type="password"] {
