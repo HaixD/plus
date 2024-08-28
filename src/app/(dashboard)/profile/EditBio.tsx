@@ -108,7 +108,7 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                                 }}
                                 style={{ display: "none" }}
                             />
-                            <Image src="/placeholderimage.svg" alt="add image" width={50} height={50}/>
+                            <Image src="/camera.svg" alt="edit profile picture" width={120} height={60}/>
                         </label>
                     </div>
                     {
