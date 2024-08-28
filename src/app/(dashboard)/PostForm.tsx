@@ -1,165 +1,149 @@
 "use client"
 
-import styles from "./styles.module.css"
+import { submitPost as action, SuccessfulLoginResponse } from "@/app/actions";
+import { ErrorMessage } from "@/components/ErrorMessage";
+import { PopupContainer } from "@/components/popup/popup-container/PopupContainer";
 import Image from "next/image";
-import { ChangeEventHandler, FormEventHandler, forwardRef, useEffect, useRef, useState } from "react";
+import { TextareaHTMLAttributes, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
-import { submitPost as action, SubmitPostResponse, SuccessfulLoginResponse } from "@/app/actions";
-import { useRouter } from "next/navigation";
 import { useLocalStorage } from "usehooks-ts";
+import styles from "./styles.module.css";
 
 export type PostFormProps = {
+    isVisible?: boolean
     onExitClick: () => void
     charLimit: number
 }
 
-export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(function PostForm({
+export function PostForm({
+    isVisible=false,
     onExitClick,
     charLimit
-}, ref) {
-        const [account, _] = useLocalStorage<SuccessfulLoginResponse>("account", { token: "", username: "" })
-        const [username, setUsername] = useState("")
-        const [submitResponse, formAction] = useFormState(action, {})
-        const [charCount, setCharCount] = useState(0)
-        const [previewSrc, setPreviewSrc] = useState<Blob | null>(null)
-    
-        const textareaRef = useRef<HTMLTextAreaElement>(null)
-        
-        useEffect(() => {
+}: PostFormProps) {
+    const [account, _] = useLocalStorage<SuccessfulLoginResponse>("account", { token: "", username: "" })
+    const [username, setUsername] = useState("")
+    const [text, setText] = useState("")
+    const [previewSrc, setPreviewSrc] = useState<Blob | null>(null)
+    const [submitResponse, formAction] = useFormState(action, {})
 
-        }, [submitResponse])
-
-        useEffect(() => {
-            setUsername(account.username)
-        }, [account])
-        
-        const removeAttachment = () => {
-            setPreviewSrc(null)
-        }
-    
-        const onTextChange: ChangeEventHandler<HTMLTextAreaElement> = (evt) => {
-            evt.target.value = evt.target.value.slice(0, charLimit)
-            setCharCount(evt.target.value.length)
-        }
-
-        const submitPost: FormEventHandler<HTMLFormElement> = (evt) => {
-            evt.preventDefault()
-            const payload = new FormData()
-            payload.append("text", textareaRef.current?.value ?? "")
-            console.log(previewSrc?.type)
-            if (previewSrc) payload.append("image", previewSrc, )
-            formAction(payload)
-        }
-        
-        return (
-            <div 
-                ref={ref} 
-                onClick={onExitClick}
-                className={styles["post-form-container"]}
-            >
-                <form onSubmit={submitPost} className={styles["post-form"]} onClick={(evt) => { evt.stopPropagation() }}>
-                    <div id={styles.profile}></div>
-                    <p id={styles.name}>{username}</p>
-                    <Image 
-                        id={styles.exit} 
-                        onClick={onExitClick}
-                        src="/exit.svg" 
-                        alt="exit" 
-                        width={50} 
-                        height={50}
-                        style={{
-                            cursor: "pointer"
-                        }}
-                    />
-                    <textarea 
-                        ref={textareaRef}
-                        id={styles.text} 
-                        onChange={onTextChange}
-                        style={{ 
-                            backgroundColor: "transparent", 
-                            border: "1px solid black", 
-                            outline: "none",
-                            resize: "none",
-                            fontSize: "1.25rem",
-                            padding: "0.75rem 1rem"
-                        }}
-                    />
-                    <div id={styles["attach-button"]}>
-                        <label 
-                            htmlFor="attach-button"
-                            style={{
-                                cursor: "pointer",
-                                userSelect: "none"
-                            }}
-                        >
-                            <input 
-                                id="attach-button"
-                                type="file"
-                                accept="image/*"
-                                onChange={(evt) => {
-                                    if (!evt.target.files || !evt.target.files[0]) return
-                                    setPreviewSrc(evt.target.files[0])
-                                }}
-                                style={{ display: "none" }}
-                            />
-                            <Image src="/placeholderimage.svg" alt="add image" width={50} height={50}/>
-                        </label>
-                    </div>
-                    {
-                        previewSrc ? 
-                            <div
-                                id={styles.preview} 
-                                className={styles.attachment}
-                                style={{
-                                    width: "max-content"
-                                }}
-                            >
-                                <img 
-                                    src={URL.createObjectURL(previewSrc)} 
-                                    alt="image preview" 
-                                    style={{
-                                        cursor: "pointer"
-                                    }}
-                                />
-                                <div
-                                    onClick={removeAttachment}
-                                    style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        backgroundColor: "rgba(0, 0, 0, 0.8)",
-                                        display: "grid",
-                                        placeItems: "center"
-                                    }}
-                                >
-                                    <Image 
-                                        src="/exit.svg" 
-                                        alt="remove attachment" 
-                                        width={40} 
-                                        height={40}
-                                        style={{
-                                            filter: "brightness(0) invert(1)"
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                            : null
-                    }
-                    <p id={styles.count} style={{ margin: 0 }}>{`${charCount}/${charLimit}`}</p>
-                    <input
-                        type="submit"
-                        value="Send"
-                        id={styles.send}
-                        style={{
-                            borderRadius: "9999px",
-                            border: "none",
-                            fontSize: "24px",
-                            padding: "0.5rem 2rem",
-                            backgroundColor: "#c2d9d1",
-                            cursor: "pointer"
-                        }}
-                    />
-                </form>
-            </div>
-        );
+    const close = () => {
+        setText("")
+        setPreviewSrc(null)
+        onExitClick()
     }
-)
+
+    useEffect(() => {
+        if (!("error" in submitResponse)) {
+            close()
+        }
+    }, [submitResponse])
+    
+    useEffect(() => {
+        setUsername(account.username)
+    }, [account])
+    
+    const removeAttachment = () => {
+        setPreviewSrc(null)
+    }
+
+    const submitPost = (payload: FormData) => {
+        payload.append("token", account.token)
+        if (previewSrc === null) payload.delete("image")
+        formAction(payload)
+    }
+    
+    return (
+        <PopupContainer isVisible={isVisible} onClick={close}>
+            <form 
+                action={submitPost} 
+                id={styles["post-form"]} 
+                onClick={evt => { evt.stopPropagation() }}
+            >
+                <ProfilePicture src="/background.jpg"/>
+                <p id={styles.name}>@{username}</p>
+                <Image 
+                    onClick={close}
+                    src="/exit.svg" 
+                    alt="exit" 
+                    width={50} 
+                    height={50}
+                    id={styles.exit}
+                />
+                <CappedTextArea 
+                    cap={charLimit}
+                    value={text}
+                    onChange={evt => setText(evt.target.value)}
+                    name="text"
+                />
+                <div id={styles["attach-button"]}>
+                    <label htmlFor="attach-button">
+                        <input 
+                            id="attach-button"
+                            type="file"
+                            accept="image/*"
+                            name="image"
+                            onChange={(evt) => {
+                                if (!evt.target.files || !evt.target.files[0]) return
+                                setPreviewSrc(evt.target.files[0])
+                            }}
+                        />
+                        <Image 
+                            src="/placeholderimage.svg" 
+                            alt="add image" 
+                            width={50} 
+                            height={50}
+                        />
+                    </label>
+                </div>
+                {
+                    previewSrc ? 
+                        <div id={styles.preview}>
+                            <img src={URL.createObjectURL(previewSrc)} alt="image preview"/>
+                            <div onClick={removeAttachment} >
+                                <Image 
+                                    src="/exit.svg" 
+                                    alt="remove attachment" 
+                                    width={40} 
+                                    height={40}
+                                    id={styles.exit}
+                                />
+                            </div>
+                        </div>
+                        : null
+                }
+                <ErrorMessage responseState={submitResponse} id={styles.error}/>
+                <p id={styles.count}>{`${text.length}/${charLimit}`}</p>
+                <input type="submit" value="Send" className="button" id={styles.send}/>
+            </form>
+        </PopupContainer>
+    );
+}
+
+function ProfilePicture({
+    src
+}: Readonly<{
+    src: string
+}>) {
+    return (
+        <Image src={src} alt="Profile picture" width={64} height={64} id={styles.profile}/>
+    )
+}
+
+function CappedTextArea({
+    cap,
+    onChange,
+    ...props
+}: Readonly<{
+    cap: number
+} & TextareaHTMLAttributes<HTMLTextAreaElement>>) {
+    return (
+        <textarea
+            onChange={evt => {
+                evt.target.value = evt.target.value.slice(0, cap)
+                if (onChange) onChange(evt)
+            }}
+            id={styles.text}
+            {...props}
+        />
+    )
+}

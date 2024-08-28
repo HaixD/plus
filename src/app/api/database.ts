@@ -143,16 +143,17 @@ export async function changePassword(token: string, newPassword: string) {
     })
 }
 
-export async function addPost(posterID: number, content: string, imagePath: string) {
+export async function addPost(token: string, content: string | null, imagePath: string | null) {
+    const posterID = await getUserID(token)
+
     const db = new sqlite3.Database("plus.db")
     await new Promise<void>((resolve, reject) => {
-        db.get(`
+        db.run(`
             INSERT INTO "posts" ("poster", "content", "image_path")
-            VALUES
-                (?, ?, ?)
-        `, [posterID, content, imagePath], (error, _) => {
+            VALUES (?, ?, ?)
+        `, [posterID, content, imagePath], error => {
             if (error) {
-                reject("error occured when adding post")
+                reject("Error occured when adding post")
             } else {
                 resolve()
             }

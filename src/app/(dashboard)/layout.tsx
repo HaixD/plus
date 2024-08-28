@@ -4,8 +4,11 @@ import Link, { LinkProps } from "next/link";
 import styles from "./styles.module.css"
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PostForm } from "./PostForm";
+import { useRouter } from "next/navigation";
+import { useLocalStorage } from "usehooks-ts";
+import { SuccessfulLoginResponse } from "@/app/actions";
 
 export default function Layout({
     children,
@@ -14,61 +17,78 @@ export default function Layout({
 }>) {
     const charLimit = 300
 
-    const postFormRef = useRef<HTMLDivElement>(null)
+    const router = useRouter()
+    const [account, _] = useLocalStorage<SuccessfulLoginResponse>("account", { token: "", username: "" })
+    const [postFormVisible, setPostFormVisible] = useState(false)
+    const [settingsMenuVisible, setSettingsMenuVisible] = useState(false)
 
     useEffect(() => {
         hidePostForm()
+
+        if (!account.token) {
+            router.replace("/login")
+            return
+        }
     }, [])
     
-    const showPostForm = () => {
-        if (!postFormRef.current) return
-        
-        postFormRef.current.style.display = "flex"
-    }
+    const showPostForm = () => setPostFormVisible(true)
+    const hidePostForm = () => setPostFormVisible(false)
 
-    const hidePostForm = () => {
-        if (!postFormRef.current) return
-        
-        postFormRef.current.style.display = "none"
-    }
+    const showSettingsMenu = () => setSettingsMenuVisible(true)
+    const hideSettingsMenu = () => setSettingsMenuVisible(false)
+    const toggleSettingsMenu = () => setSettingsMenuVisible(!settingsMenuVisible)
     
     return (
         <>
-            <div className={styles["page-container"]}>
-                <div className={styles.navbar}>
-                    <nav className={styles.navlinks}>
+            <div id={styles["page-container"]} onClick={hideSettingsMenu}>
+                <div id={styles.navbar}>
+                    <nav id={styles.navlinks}>
                         <NavLink text="Home" href="/home"/>
                         <NavLink text="Explore" href="/explore"/>
                         <NavLink text="Notifications" href="/notifications"/>
                         <NavLink text="Bookmarks" href="/bookmarks"/>
                         <NavLink text="Profile" href="/profile"/>
                     </nav>
-                    <button
-                        onClick={showPostForm}
-                        className="button"
-                        style={{
-                            margin: "auto",
-                            width: "80%"
-                        }}
-                    >
-                        Post
-                    </button>
-                    <Link
-                        href="/settings"
-                        style={{
-                            marginTop: "auto",
-                            marginLeft: "auto",
-                            marginRight: "2rem",
-                            marginBottom: "2rem"
-                        }}
-                    >
-                        <Image src="/settings.svg" alt="settings" width={50} height={50}/>
-                    </Link>
+                    <div id={styles["extra-options"]}>
+                        <button
+                            id={styles["post-button"]}
+                            onClick={showPostForm}
+                            className="row-button"
+                        >
+                            Post
+                        </button>
+                        <div 
+                            id={styles["settings-menu"]}
+                            style={{
+                                display: settingsMenuVisible ? "grid" : "none"
+                            }}
+                        >
+                            <Link href="/settings">
+                                <Image src="/account.svg" alt="Your Account" width={50} height={50}/>
+                                <p>Your account</p>
+                            </Link>
+                            <Link href="/login">
+                                <Image src="/logout.svg" alt="Log Out" width={50} height={50}/>
+                                <p>Log Out</p>
+                            </Link>
+                        </div>
+                        <Image 
+                            id={styles["settings-button"]} 
+                            src="/settings.svg" 
+                            alt="settings" 
+                            width={50} 
+                            height={50}
+                            onClick={(evt) => {
+                                evt.stopPropagation()
+                                toggleSettingsMenu()
+                            }}
+                        />
+                    </div>
                 </div>
                 <div>{children}</div>
                 <div/>
             </div>
-            <PostForm ref={postFormRef} charLimit={charLimit} onExitClick={hidePostForm}/>
+            <PostForm isVisible={postFormVisible} charLimit={charLimit} onExitClick={hidePostForm}/>
         </>
     );
 }
@@ -77,7 +97,7 @@ function NavLink({
     text,
     href,
     ...props
-}: Readonly<Exclude<LinkProps, "children"> & {
+}: Readonly<Exclude<LinkProps, "children" | "className"> & {
     text: string
 }>) {
     const pathname = usePathname()
@@ -85,9 +105,7 @@ function NavLink({
     return (
         <Link
             href={href}
-            style={{
-                fontWeight: pathname === href ? "bold" : "normal"
-            }}
+            className={pathname === href ? styles.selected : undefined}
             {...props}
         >
             {text}

@@ -1,12 +1,45 @@
 :root {
+    /* colors */
+    --color-error: red;
+    --color-navbar: white;
+    --color-button: black;
+
+    /* image widths */
+    --icon-scale: 32px;
+    --profile-scale-small: 64px;
+    --profile-scale-large: 128px;
+    --image-scale-small: 256px;
+    
+    /* object widths */
+    --width-row-button: 80%;
+    
+    --background-color: #bfbfdb;
+    --background-color-navbar: #0d1445;
+    --background-color-popup: #e0d6d9;
+    --background-color-button: #c2d9d1;
+
     --font-size-small: 0.75rem;
-    --font-size-regular: 1rem;
+    --font-size-medium: 1rem;
     --font-size-large: 1.5rem;
     --font-size-larger: 2rem;
     --font-size-largest: 3rem;
-    --background-color: #bfbfdb;
-    --error-color: red;
-    --gap-small: 0.25rem;
+
+    --gap-smaller: 0.25rem;
+    --gap-small: 0.5rem;
+    --gap-medium: 1rem;
+    --gap-large: 1.5rem;
+    --gap-larger: 2rem;
+
+    --padding-small: 0.5rem;
+    --padding-medium: 1rem;
+    --padding-large: 2rem;
+    --padding-larger: 4rem;
+
+    --border-radius-pill: 9999px;
+    --border-radius-medium: 32px;
+    --border-radius-circle: 50%;
+
+    --border-text: 1px solid black;
 }
 
 input[type="text"], input[type="password"] {
@@ -20,12 +53,25 @@ input[type="text"], input[type="password"] {
 .button {
     display: block;
     width: fit-content;
-    color: black;
-    background-color: #c2d9d1;
-    padding: .5rem 2rem;
+    color: var(--color-button);
+    background-color: var(--background-color-button);
+    padding: var(--padding-small) var(--padding-large);
     border: none;
-    border-radius: 9999px;
+    border-radius: var(--border-radius-pill);
     text-align: center;
     text-decoration: none;
     cursor: pointer;
+}
+
+.row-button {
+    display: block;
+    color: var(--color-button);
+    background-color: var(--background-color-button);
+    border: none;
+    border-radius: var(--border-radius-pill);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    width: var(--width-row-button);
+    padding-block: var(--padding-small);
 }

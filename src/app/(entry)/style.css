@@ -21,7 +21,7 @@ h1 {
 form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--gap-large);
     align-items: center;
 }
 
