@@ -8,6 +8,7 @@ import { login, SuccessfulLoginResponse } from "@/app/actions"
 import { useFormState } from "react-dom"
 import { useRouter } from "next/navigation"
 import { useLocalStorage } from "usehooks-ts"
+import "../style.css"
 
 export default function Page() {
     const [_, setAccount] = useLocalStorage<SuccessfulLoginResponse>("account", { token: "", username: "" })
@@ -34,15 +35,8 @@ export default function Page() {
                 <ErrorMessage responseState={loginResponse}/>
                 <input type="submit" className="button" value="Log In"/>
             </form>
-            <div 
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: "1rem",
-                    fontSize: "var(--font-size-large)"
-                }}
-            >
+
+            <div id="formalt">
                 <p>Don't have an account?</p>
                 <Link href="/create_account" className="button">Create Account</Link>
             </div>

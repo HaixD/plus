@@ -1,5 +1,4 @@
 import "./style.css"
-import styles from "./styles.module.css"
 import Image from "next/image";
 import { ReactNode } from "react";
 
@@ -9,7 +8,7 @@ export default function Layout({
     children: ReactNode
 }>) {
     return (
-        <main
+        <main 
             style={{
                 minHeight: "100vh",
                 display: "grid",
