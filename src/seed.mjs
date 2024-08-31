@@ -44,6 +44,21 @@ db.serialize(
             )
         `)
 
+        db.run(`
+            CREATE TABLE IF NOT EXISTS "tokens" (
+                "token" TEXT PRIMARY KEY,
+                "id" INTEGER REFERENCES "accounts" ("id")
+            )
+        `)
+
+        db.run(`
+            CREATE TABLE IF NOT EXISTS "profiles" (
+                "picture" TEXT PRIMARY KEY,
+                "id" INTEGER REFERENCES "accounts" ("id")
+            )
+        `)
+
+
         // placeholder data seeding
         db.run(`
             INSERT INTO "accounts" ("username", "password")

@@ -79,3 +79,9 @@
         text-decoration: underline;
     }
 }
+
+#accountlayout {
+    justify-self: stretch;
+    display: grid;
+    gap: 1rem;
+}

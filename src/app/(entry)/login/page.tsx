@@ -8,7 +8,7 @@ import { login, SuccessfulLoginResponse } from "@/app/actions"
 import { useFormState } from "react-dom"
 import { useRouter } from "next/navigation"
 import { useLocalStorage } from "usehooks-ts"
-import "../style.css"
+import styles from "./styles.module.css";
 
 export default function Page() {
     const [_, setAccount] = useLocalStorage<SuccessfulLoginResponse>("account", { token: "", username: "" })

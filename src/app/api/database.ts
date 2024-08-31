@@ -161,3 +161,23 @@ export async function addPost(token: string, content: string | null, imagePath: 
         db.close()
     })
 }
+
+//* this isn't finished, 
+export async function updateBio(userID: number, token: string) {
+    const db = new sqlite3.Database("plus.db")
+    await new Promise<void>((resolve, reject) => {
+        db.run(`
+            DELETE FROM "tokens"
+            WHERE "id" = ?
+            RETURNING *
+        `, [userID], (error) => {
+            if (error) {
+                reject("Error occured when updating Bio")
+            } else {
+                resolve()
+            }
+        })
+    })
+    await addToken(userID, token)
+}
+

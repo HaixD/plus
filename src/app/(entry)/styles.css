@@ -1,0 +1,28 @@
+body {
+    background-color: var(--background-color);
+}
+
+h1 {
+    font-size: var(--font-size-largest);
+    text-align: center;
+    font-weight: lighter;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-large);
+    align-items: center;
+}
+
+main {
+    min-height: 100vh;
+    display: "grid";
+    grid-template-columns: 70vw auto;
+}
+
+input[type="submit"] {
+    font-size: 2rem;
+    padding: 1rem;
+    width: 80%;
+}

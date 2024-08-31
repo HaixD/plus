@@ -1,0 +1,28 @@
+@import "./styles.css";
+
+.container {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: auto max-content;
+}
+
+#formalt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    font-size: var(--font-size-large);
+}
+
+.logo {
+    display: block;
+    place-self: center;
+}
+
+.bodylayout {
+    background-color: white;
+    padding-inline: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}

@@ -1,4 +1,4 @@
-import "./style.css"
+import styles from "./styles.module.css";
 import Image from "next/image";
 import { ReactNode } from "react";
 
@@ -25,14 +25,15 @@ export default function Layout({
                     placeSelf: "center"
                 }}
             />
-            <div
-                style={{
-                    backgroundColor: "white",
-                    paddingInline: "4rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-evenly"
-                }}
+            <div className={styles.bodylayout}
+            
+                // style={{
+                //     backgroundColor: "white",
+                //     paddingInline: "4rem",
+                //     display: "flex",
+                //     flexDirection: "column",
+                //     justifyContent: "space-evenly"
+                // }}
             >
                 {children}
             </div>
