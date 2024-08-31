@@ -1,6 +1,7 @@
 import styles from "./styles.module.css";
 import Image from "next/image";
 import { ReactNode } from "react";
+import "./styles.css"
 
 export default function Layout({
     children

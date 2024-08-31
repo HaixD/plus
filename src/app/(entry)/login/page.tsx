@@ -36,7 +36,7 @@ export default function Page() {
                 <input type="submit" className="button" value="Log In"/>
             </form>
 
-            <div id="formalt">
+            <div id={styles.formalt}>
                 <p>Don't have an account?</p>
                 <Link href="/create_account" className="button">Create Account</Link>
             </div>
