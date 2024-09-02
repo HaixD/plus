@@ -9,32 +9,23 @@ export default function Layout({
     children: ReactNode
 }>) {
     return (
-        <main 
-            style={{
-                minHeight: "100vh",
-                display: "grid",
-                gridTemplateColumns: "70vw auto"
-            }}
+        <main className={styles.main}
+        //External CSS not applied correctly
+        style={{
+            minHeight: "100vh",
+            display: "grid",
+            gridTemplateColumns: "70vw auto"
+        }}
         >
             <Image 
                 src="/logo1.png" 
                 alt="logo" 
                 width={338} 
                 height={338}
-                style={{
-                    display: "block",
-                    placeSelf: "center"
-                }}
+                id="logostyle"
             />
+
             <div className={styles.bodylayout}
-            
-                // style={{
-                //     backgroundColor: "white",
-                //     paddingInline: "4rem",
-                //     display: "flex",
-                //     flexDirection: "column",
-                //     justifyContent: "space-evenly"
-                // }}
             >
                 {children}
             </div>

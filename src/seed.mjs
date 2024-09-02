@@ -54,6 +54,7 @@ db.serialize(
         db.run(`
             CREATE TABLE IF NOT EXISTS "profiles" (
                 "picture" TEXT PRIMARY KEY,
+                "bio" TEXT,
                 "id" INTEGER REFERENCES "accounts" ("id")
             )
         `)

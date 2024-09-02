@@ -85,3 +85,10 @@
     display: grid;
     gap: 1rem;
 }
+
+#generalstyle {
+    display: grid;
+    justify-items: stretch;
+    width: 100%;
+    margin-inline: auto;
+}

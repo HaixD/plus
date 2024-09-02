@@ -5,12 +5,7 @@ export default function Page() {
     return (
         <>
             <h1 id={styles.title}>Your Account</h1>
-            <div
-                style={{
-                    justifySelf: "stretch",
-                    display: "grid",
-                    gap: "1rem"
-                }}
+            <div id= {styles.accountlayout}
             >
                 <SettingOption href="/settings/username" text="Change Username"/>
                 <SettingOption href="/settings/password" text="Change Password"/>

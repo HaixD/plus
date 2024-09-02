@@ -162,22 +162,55 @@ export async function addPost(token: string, content: string | null, imagePath: 
     })
 }
 
-//* this isn't finished, 
-export async function updateBio(userID: number, token: string) {
+
+
+
+//this also is not finished, make it so there is an option to save the profile picture as well. 
+
+export async function addBio(userID: number, Bio: string) {
     const db = new sqlite3.Database("plus.db")
     await new Promise<void>((resolve, reject) => {
-        db.run(`
-            DELETE FROM "tokens"
-            WHERE "id" = ?
+        db.get(`
+            INSERT INTO "profile" ("Bio", "id")
+            VALUES (?, ?)
+            ON CONFLICT ("token") DO NOTHING
             RETURNING *
-        `, [userID], (error) => {
-            if (error) {
-                reject("Error occured when updating Bio")
+        `, [Bio, userID], (error, row) => {
+            if (error || row === undefined) {
+                reject("Error occured when updating Biography")
             } else {
                 resolve()
             }
         })
     })
-    await addToken(userID, token)
 }
 
+// this isn't finished, 
+
+export async function UpdateBio(Bio: string, : OldBio: string) {
+    const posterID = await getUserID(token)
+    
+    const db = new sqlite3.Database("plus.db")
+    await new Promise<void>((resolve, reject) => {
+        db.get(`
+            UPDATE "accounts"
+            SET
+                "username" = ?
+            WHERE "id" = ?
+            RETURNING *
+        `, [newUsername, posterID], (error, row: any) => {
+            if (error) {
+                if ("errno" in error && error.errno === 19) {
+                    reject("Username is already taken")
+                } else {
+                    reject("Error occured when changing account username")
+                }
+            } else if (row === undefined) {
+                reject("Error occured when changing account username")
+            } else {
+                resolve()
+            }
+        })
+        db.close()
+    })
+}
