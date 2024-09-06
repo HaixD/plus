@@ -162,51 +162,48 @@ export async function addPost(token: string, content: string | null, imagePath: 
     })
 }
 
-
-
-
 //this also is not finished, make it so there is an option to save the profile picture as well. 
-
-export async function addBio(userID: number, Bio: string) {
+export async function addBioModal(token: string, bio: string, imagePath: string | null) {
+    const userID = await getUserID(token)
+    
     const db = new sqlite3.Database("plus.db")
     await new Promise<void>((resolve, reject) => {
-        db.get(`
-            INSERT INTO "profile" ("Bio", "id")
-            VALUES (?, ?)
-            ON CONFLICT ("token") DO NOTHING
+        //not sure if this has to be in order for the columns
+        db.run(`
+            INSERT INTO "profile" ("userID", "bio", "imagePath")
+            VALUES (?, ?, ?)
+            ON CONFLICT ("id") DO NOTHING
             RETURNING *
-        `, [Bio, userID], (error, row) => {
-            if (error || row === undefined) {
-                reject("Error occured when updating Biography")
+        `, [bio, imagePath], (error, row: any) => {
+            if (error) {
+                reject("Error occured when creating Biography")
+            } else if (row === undefined) {
+                reject("User already has existing biography")
             } else {
                 resolve()
             }
         })
+        db.close()
     })
 }
 
-// this isn't finished, 
-
-export async function UpdateBio(Bio: string, : OldBio: string) {
-    const posterID = await getUserID(token)
+// this isn't finished,  and I'm frankly confused
+export async function changeBioModal(token: string, bio: string, imagePath: string) {
+    //not sure what to do with this as ID has to be matched to the profile
+    const userID = await getUserID(token)
     
     const db = new sqlite3.Database("plus.db")
     await new Promise<void>((resolve, reject) => {
         db.get(`
-            UPDATE "accounts"
+            UPDATE "profile"
             SET
-                "username" = ?
+                "bio" = ?
+                "imagePath" = ?
             WHERE "id" = ?
             RETURNING *
-        `, [newUsername, posterID], (error, row: any) => {
-            if (error) {
-                if ("errno" in error && error.errno === 19) {
-                    reject("Username is already taken")
-                } else {
-                    reject("Error occured when changing account username")
-                }
-            } else if (row === undefined) {
-                reject("Error occured when changing account username")
+        `, [bio, imagePath], (error, row: any) => {
+            if (error || row === undefined) {
+                reject("Error. changes were not saved.")
             } else {
                 resolve()
             }

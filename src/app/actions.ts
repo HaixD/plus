@@ -5,6 +5,8 @@ import {
     addAccount, 
     changeUsername as dbChangeUsername, 
     changePassword as dbChangePassword,
+    addBioModal,
+    changeBioModal as dbChangeBio,
     addPost,
     addToken, 
     updateToken,
@@ -105,8 +107,6 @@ export async function createAccount(_: LoginResponse, formData: FormData): Promi
     return createLoginResponse(addAccount(username, password), username)
 }
 
-
-
 export type SuccessfulChangeUsernameResponse = {
     username: string
 }
@@ -157,3 +157,71 @@ export async function changePassword(_: ChangePasswordResponse, formData: FormDa
     
     return { token }
 }
+
+//past here is full test
+export type SuccessfulSaveBioResponse = {}
+
+export type SaveBioResponse = ErrorResponse | SuccessfulSaveBioResponse
+
+export async function createBioModal(_: SaveBioResponse, formData: FormData): Promise<SubmitPostResponse> {
+    const imageFolder = path.join(process.cwd(), "public", "external")
+    
+    const bio = formData.get("bio") as string
+    const pfp = formData.get("picture") as Blob
+    const token = formData.get("token") as string
+    
+    if (!pfp || !bio) return {
+        error: "Bio cannot be empty and you must upload a picture"
+    }
+
+    if (!token) return {
+        error: "Credentials are invalid, please login again" 
+    }
+
+    let filename: string
+    if (pfp) {
+        if (pfp.size === 0 || !/^image/.test(pfp.type)) return { error: "Image cannot be accepted" }
+        
+        const buffer = await pfp.arrayBuffer()
+
+        const dirLength = (await readdir(imageFolder)).length
+        filename = `${dirLength}.${pfp.type.match(/(?<=image\/).*/) ?? "blob"}`
+
+        writeFile(path.join(imageFolder, filename), Buffer.from(buffer))
+    }
+    
+    try {
+        await addBioModal(token, bio, pfp)
+    } catch (error) {
+        return { error }
+    }
+    
+    return { }
+}
+
+export type SuccessfulChangeBioResponse = { 
+    bio:string,
+    pfp: string
+}
+
+export type ChangeBioResponse = ErrorResponse | SuccessfulChangeBioResponse
+
+//tested down here for change
+export async function changeBioModal(_: ChangeBioResponse, formData: FormData): Promise<ChangeBioResponse> {
+    const bio = formData.get("bio") as string
+    const pfp = formData.get("picture") as Blob
+    const token = formData.get("token") as string | null
+
+    if (!bio || pfp) return { error: "Bio or profile picture could not be saved" }
+
+    if (!token) return { error: "Credentials are invalid, please login again" }
+    
+    try {
+        await dbChangeBio(token, bio, pfp)
+    } catch (error) {
+        return { error: error as string }
+    }
+    
+    return { bio, pfp}
+}
+
