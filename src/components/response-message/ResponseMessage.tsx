@@ -12,6 +12,7 @@ type ResponseMessageProps<T extends object> = {
 export function ResponseMessage<T extends object>({
     responseState,
     successMessage="Success",
+    id="",
     ...props
 }: Readonly<ResponseMessageProps<T>>) {
     if (!responseState) return <p className={styles["response-message"]}></p>

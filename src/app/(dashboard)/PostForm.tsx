@@ -1,6 +1,6 @@
 "use client"
 
-import { submitPost as action, SuccessfulLoginResponse } from "@/app/actions";
+import { submitPost as action, SubmitPostResponse, SuccessfulLoginResponse } from "@/app/actions";
 import { ResponseMessage } from "@/components/response-message/ResponseMessage";
 import { PopupContainer } from "@/components/popup/popup-container/PopupContainer";
 import Image from "next/image";
@@ -24,7 +24,8 @@ export function PostForm({
     const [username, setUsername] = useState("")
     const [text, setText] = useState("")
     const [previewSrc, setPreviewSrc] = useState<Blob | null>(null)
-    const [submitResponse, formAction] = useFormState(action, {})
+    const [serverResponse, formAction] = useFormState(action, { error: "" })
+    const [submitResponse, setSubmitResponse] = useState<SubmitPostResponse>({ error: "" })
 
     const close = () => {
         setText("")
@@ -33,10 +34,13 @@ export function PostForm({
     }
 
     useEffect(() => {
-        if (!("error" in submitResponse)) {
+        setSubmitResponse(serverResponse)
+
+        if (!("error" in serverResponse)) {
             close()
+            setSubmitResponse({ error: "" })
         }
-    }, [submitResponse])
+    }, [serverResponse])
     
     useEffect(() => {
         setUsername(account.username)
@@ -111,7 +115,9 @@ export function PostForm({
                         </div>
                         : null
                 }
-                <ResponseMessage responseState={submitResponse} id={styles.error}/>
+                <div id={styles.error}>
+                    <ResponseMessage responseState={submitResponse}/>
+                </div>
                 <p id={styles.count}>{`${text.length}/${charLimit}`}</p>
                 <input type="submit" value="Send" className="button" id={styles.send}/>
             </form>

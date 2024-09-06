@@ -198,7 +198,8 @@
 
     & > #send {
         grid-area: send;
-        font-size: var(--font-size-large)
+        place-self: center;
+        font-size: var(--font-size-large);
     }
 
     & > #error {

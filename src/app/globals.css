@@ -16,7 +16,8 @@
     
     --background-color: #bfbfdb;
     --background-color-navbar: #0d1445;
-    --background-color-popup: #e0d6d9;
+    --background-color-popup-parent: rgba(0, 0, 0, 0.8);
+    --background-color-popup-child: #e0d6d9;
     --background-color-button: #c2d9d1;
 
     --font-size-small: 0.75rem;
