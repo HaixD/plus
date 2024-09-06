@@ -1,3 +1,4 @@
+import styles from "./styles.module.css"
 import { HTMLAttributes } from "react"
 
 export type LabeledInputProps = {
@@ -15,12 +16,7 @@ export function LabeledInput({
 }: Readonly<LabeledInputProps>) {
     return (
         <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--gap-smaller)",
-                ...style
-            }}
+            id={styles["labeled-input"]}
             {...props}
         >
             <label htmlFor={name}>{text}</label>

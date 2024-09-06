@@ -4,8 +4,8 @@ import { useEffect } from "react"
 import { createAccount } from "@/app/actions"
 import { useFormState } from "react-dom"
 import { useRouter } from "next/navigation"
-import { LabeledInput } from "@/components/LabeledInput"
-import { ErrorMessage } from "@/components/ErrorMessage"
+import { LabeledInput } from "@/components/labeled-input/LabeledInput"
+import { ResponseMessage } from "@/components/response-message/ResponseMessage"
 
 export default function Page() {
     const [signupResponse, formAction] = useFormState(createAccount, { error: "" })
@@ -26,7 +26,7 @@ export default function Page() {
                 <LabeledInput text="Username" type="text" style={{ width: "100%" }}/>
                 <LabeledInput text="Password" type="password" style={{ width: "100%" }}/>
                 <LabeledInput text="Verify Password" type="password" style={{ width: "100%" }}/>
-                <ErrorMessage responseState={signupResponse}/>
+                <ResponseMessage responseState={signupResponse}/>
                 <input type="submit" className="button" value="Sign Up"/>
             </form>
         </>

@@ -1,7 +1,6 @@
 import styles from "./styles.module.css";
 import Image from "next/image";
 import { ReactNode } from "react";
-import "./styles.css"
 
 export default function Layout({
     children
@@ -9,17 +8,16 @@ export default function Layout({
     children: ReactNode
 }>) {
     return (
-        <main className={styles.main}>
+        <main id={styles.page}>
             <Image 
                 src="/logo1.png" 
                 alt="logo" 
                 width={338} 
                 height={338}
-                id="logostyle"
+                id={styles.logo}
             />
 
-            <div className={styles.bodylayout}
-            >
+            <div className={styles.bodylayout}>
                 {children}
             </div>
         </main>

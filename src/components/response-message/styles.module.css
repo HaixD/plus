@@ -1,0 +1,14 @@
+.response-message {
+    text-align: center;
+    min-height: 1lh;
+    font-size: var(--font-size-medium);
+    margin: 0;
+}
+
+#error-message {
+    color: var(--color-error);
+}
+
+#success-message {
+    color: var(--color-success)
+}

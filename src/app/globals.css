@@ -1,6 +1,7 @@
 :root {
     /* colors */
     --color-error: red;
+    --color-success: hsl(120, 77%, 25%);
     --color-navbar: white;
     --color-button: black;
 
@@ -50,6 +51,16 @@ input[type="text"], input[type="password"] {
     outline: none;
 }
 
+body {
+    background-color: var(--background-color);
+}
+
+h1 {
+    font-size: var(--font-size-largest);
+    text-align: center;
+    font-weight: lighter;
+}
+
 .button {
     display: block;
     width: fit-content;
@@ -74,4 +85,15 @@ input[type="text"], input[type="password"] {
     cursor: pointer;
     width: var(--width-row-button);
     padding-block: var(--padding-small);
+    font-size: var(--font-size-large);
+}
+
+.vertical-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-large);
+
+    & .row-button {
+        margin-inline: auto;
+    }
 }

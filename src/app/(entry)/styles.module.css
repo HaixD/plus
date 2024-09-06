@@ -1,4 +1,4 @@
-.main {
+#page {
     min-height: 100vh;
     display: grid;
     grid-template-columns: 70vw auto;
@@ -10,7 +10,7 @@
     grid-template-columns: auto max-content;
 }
 
-.logo {
+#logo {
     display: block;
     place-self: center;
 }

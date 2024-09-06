@@ -36,11 +36,6 @@
             }
         }
     }
-
-    .button {
-        font-size: 36px;
-        width: 100%;
-    }
 }
 
 #title {
@@ -52,14 +47,10 @@
     display: grid;
     gap: 2rem;
     width: 50%;
-    justify-items: center;
     margin-inline: auto;
 
-    & > * {
-        width: 100%;
-    }
-
     & .button {
+        margin-inline: auto;
         font-size: var(--font-size-large);
     }
 }

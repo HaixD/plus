@@ -1,7 +1,7 @@
 "use client"
 
 import { submitPost as action, SuccessfulLoginResponse } from "@/app/actions";
-import { ErrorMessage } from "@/components/ErrorMessage";
+import { ResponseMessage } from "@/components/response-message/ResponseMessage";
 import { PopupContainer } from "@/components/popup/popup-container/PopupContainer";
 import Image from "next/image";
 import { TextareaHTMLAttributes, useEffect, useState } from "react";
@@ -111,7 +111,7 @@ export function PostForm({
                         </div>
                         : null
                 }
-                <ErrorMessage responseState={submitResponse} id={styles.error}/>
+                <ResponseMessage responseState={submitResponse} id={styles.error}/>
                 <p id={styles.count}>{`${text.length}/${charLimit}`}</p>
                 <input type="submit" value="Send" className="button" id={styles.send}/>
             </form>
