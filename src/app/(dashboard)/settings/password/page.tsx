@@ -1,8 +1,8 @@
 "use client"
 
 import styles from "../styles.module.css"
-import { LabeledInput } from "@/components/LabeledInput"
-import { ErrorMessage } from "@/components/ErrorMessage"
+import { LabeledInput } from "@/components/labeled-input/LabeledInput"
+import { ResponseMessage } from "@/components/response-message/ResponseMessage"
 import { changePassword, SuccessfulLoginResponse } from "@/app/actions"
 import { useLocalStorage } from "usehooks-ts"
 import { useFormState } from "react-dom"
@@ -30,8 +30,8 @@ export default function Page() {
             <form id={styles.form} action={submitForm}>
                 <LabeledInput text="Password" type="password"/>
                 <LabeledInput text="Verify Password" type="password"/>
-                <ErrorMessage responseState={changePasswordResponse}/>
-                <input className={`button ${styles.button}`} type="submit" value="Update"/>
+                <ResponseMessage responseState={changePasswordResponse}/>
+                <input className={`row-button ${styles.button}`} type="submit" value="Update"/>
             </form>
         </>
 

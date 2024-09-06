@@ -1,0 +1,23 @@
+#parent-container {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--background-color-popup-parent);
+    cursor: pointer;
+    top: 0;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+#child-container {
+    background-color: var(--background-color-popup-child);
+    border-radius: var(--border-radius-medium);
+    cursor: default;
+    padding: var(--padding-large);
+    width: 55vw;
+}
+
+#parent-hidden {
+    display: none;
+}

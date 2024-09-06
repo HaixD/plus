@@ -1,7 +1,7 @@
 "use client"
 
-import { LabeledInput } from "@/components/LabeledInput"
-import { ErrorMessage } from "@/components/ErrorMessage"
+import { LabeledInput } from "@/components/labeled-input/LabeledInput"
+import { ResponseMessage } from "@/components/response-message/ResponseMessage"
 import Link from "next/link"
 import { useEffect } from "react"
 import { login, SuccessfulLoginResponse } from "@/app/actions"
@@ -29,16 +29,16 @@ export default function Page() {
     return (
         <>
             <h1>Welcome to plus</h1>
-            <form action={formAction}>
-                <LabeledInput text="Username" type="text" style={{ width: "100%" }}/>
-                <LabeledInput text="Password" type="password" style={{ width: "100%" }}/>
-                <ErrorMessage responseState={loginResponse}/>
-                <input type="submit" className="button" value="Log In"/>
+            <form action={formAction} className="vertical-form">
+                <LabeledInput text="Username" type="text"/>
+                <LabeledInput text="Password" type="password"/>
+                <ResponseMessage responseState={loginResponse}/>
+                <input type="submit" className="row-button" value="Log In"/>
             </form>
 
             <div id={styles.formalt}>
                 <p>Don't have an account?</p>
-                <Link href="/create_account" className="button">Create Account</Link>
+                <Link href="/create_account" className="row-button">Create Account</Link>
             </div>
         </>
     )

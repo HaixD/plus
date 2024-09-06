@@ -1,4 +1,5 @@
 import { forwardRef, HTMLAttributes } from "react"
+import styles from "./styles.module.css"
 
 type PopupContainerProps = {
     isVisible?: boolean
@@ -12,30 +13,10 @@ export const PopupContainer = forwardRef<HTMLDivElement, PopupContainerProps>(fu
 }, ref) {
     return (
         <div 
-            style={{
-                position: "fixed",
-                width: "100%",
-                height: "100vh",
-                display: isVisible ? "flex" : "none",
-                backgroundColor: "rgba(0, 0, 0, 0.8)",
-                cursor: "pointer",
-                top: 0,
-                justifyContent: "center",
-                alignItems: "center",
-                ...style
-            }}
+            id={isVisible ? styles["parent-container"] : styles["parent-hidden"]}
             {...props}
         >
-            <div
-                style={{
-                    backgroundColor: "var(--background-color-popup)",
-                    borderRadius: "var(--border-radius-medium)",
-                    cursor: "default",
-                    padding: "var(--padding-large)",
-                    width: "55vw",
-                    maxWidth: "55vw"
-                }}
-            >
+            <div id={styles["child-container"]}>
                 {children}
             </div>
         </div>
