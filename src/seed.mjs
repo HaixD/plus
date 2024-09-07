@@ -55,7 +55,7 @@ db.serialize(
             CREATE TABLE IF NOT EXISTS "profiles" (
                 "picture" TEXT,
                 "bio" TEXT,
-                "id" INTEGER REFERENCES "accounts" ("id")
+                "id" INTEGER PRIMARY KEY REFERENCES "accounts" ("id")
             )
         `)
 

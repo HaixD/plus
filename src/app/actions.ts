@@ -178,7 +178,7 @@ export async function createBioModal(_: SaveBioResponse, formData: FormData): Pr
         error: "Credentials are invalid, please login again" 
     }
 
-    let filename: string
+    let filename: string | null = null
     if (pfp) {
         if (pfp.size === 0 || !/^image/.test(pfp.type)) return { error: "Image cannot be accepted" }
         
@@ -191,7 +191,7 @@ export async function createBioModal(_: SaveBioResponse, formData: FormData): Pr
     }
     
     try {
-        await addBioModal(token, bio, pfp)
+        await addBioModal(token, bio, filename)
     } catch (error) {
         return { error }
     }
@@ -200,7 +200,6 @@ export async function createBioModal(_: SaveBioResponse, formData: FormData): Pr
 }
 
 export type SuccessfulChangeBioResponse = { 
-    bio: string,
     pfp: string
 }
 
@@ -212,15 +211,32 @@ export async function changeBioModal(_: ChangeBioResponse, formData: FormData): 
     const pfp = formData.get("picture") as Blob
     const token = formData.get("token") as string | null
 
-    if (!bio || !pfp) return { error: "Bio or profile picture could not be saved" }
+    const imageFolder = path.join(process.cwd(), "public", "external")
+
+    if (!bio) return {error: "Bio could not be saved" }
+
+    if(!pfp) return {error: "Profile picture could not be saved"}
 
     if (!token) return { error: "Credentials are invalid, please login again" }
+
+
+    let filename: string | null = null
+    if (pfp) {
+        if (pfp.size === 0 || !/^image/.test(pfp.type)) return { error: "Image cannot be accepted" }
+        
+        const buffer = await pfp.arrayBuffer()
+
+        const dirLength = (await readdir(imageFolder)).length
+        filename = `${dirLength}.${pfp.type.match(/(?<=image\/).*/) ?? "blob"}`
+
+        writeFile(path.join(imageFolder, filename), Buffer.from(buffer))
+    }
     
     try {
-        await dbChangeBio(token, bio, pfp)
+        await dbChangeBio(token, bio, filename)
     } catch (error) {
         return { error: error as string }
     }
-    return { bio, pfp}
+    return { pfp:`/external/${filename}`}
 }
 

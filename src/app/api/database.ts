@@ -74,20 +74,38 @@ export async function verifyLogin(username: string, password: string) {
 export async function addAccount(username: string, password: string) {
     const db = new sqlite3.Database("plus.db")
     return await new Promise<number>((resolve, reject) => {
-        db.get(`
-            INSERT INTO "accounts" ("username", "password")
-            VALUES
-                (?, ?)
-            ON CONFLICT DO NOTHING
-            RETURNING "id"
-        `, [username, password], (error, row: any) => {
+    
+        db.serialize(() => {
+            db.get(`
+                INSERT INTO "accounts" ("username", "password")
+                VALUES
+                    (?, ?)
+                ON CONFLICT DO NOTHING
+                RETURNING "id"
+            `, [username, password], (error, row: any) => {
+                if (error) {
+                    reject("Error occured when adding account")
+                } else if (row !== undefined) {
+                    resolve(row.id)
+                } else {
+                    reject("Username already exists")
+                }
+            })
+            const userId = username
+            db.run(`
+                INSERT INTO "profile" ("id", "bio", "picture")
+                VALUES (?, '', '/default.png')
+                ON CONFLICT ("id") DO NOTHING
+                RETURNING *
+        `   , [userId], (error: any, row: any) => {
             if (error) {
-                reject("Error occured when adding account")
-            } else if (row !== undefined) {
-                resolve(row.id)
+                reject("Error occured when creating Biography")
+            } else if (row === undefined) {
+                reject("User already has existing biography")
             } else {
-                reject("Username already exists")
+                resolve()
             }
+        })
         })
         db.close()
     })
@@ -170,11 +188,11 @@ export async function addBioModal(token: string, bio: string, imagePath: string 
     await new Promise<void>((resolve, reject) => {
         //not sure if this has to be in order for the columns
         db.run(`
-            INSERT INTO "profile" ("id", "bio", "imagePath")
+            INSERT INTO "profile" ("id", "bio", "picture")
             VALUES (?, ?, ?)
             ON CONFLICT ("id") DO NOTHING
             RETURNING *
-        `, [bio, imagePath], (error, row: any) => {
+        `, [bio, imagePath], (error: any, row: any) => {
             if (error) {
                 reject("Error occured when creating Biography")
             } else if (row === undefined) {
@@ -188,21 +206,25 @@ export async function addBioModal(token: string, bio: string, imagePath: string 
 }
 
 // this isn't finished,  and I'm frankly confused
-export async function changeBioModal(token: string, bio: string, imagePath: string) {
+export async function changeBioModal(token: string, bio: string | null, imagePath: string | null) {
     //not sure what to do with this as ID has to be matched to the profile
     const userID = await getUserID(token)
     
     const db = new sqlite3.Database("plus.db")
     await new Promise<void>((resolve, reject) => {
         db.get(`
-            UPDATE "profile"
-            SET
-                "bio" = ?
-                "imagePath" = ?
-            WHERE "id" = ?
-            RETURNING *
-        `, [bio, imagePath], (error, row: any) => {
-            if (error || row === undefined) {
+            INSERT INTO 
+                profiles ("bio", "picture", "id")
+                VALUES (?, ?, ?)
+                ON CONFLICT (id) DO UPDATE SET 
+                   bio = EXCLUDED.bio,
+                   picture = EXCLUDED.picture
+                RETURNING *
+        `, [bio, imagePath, userID], (error, row: any) => {
+
+            console.log(error, row)
+
+            if (row === undefined) {
                 reject("Error. changes were not saved.")
             } else {
                 resolve()

@@ -2,11 +2,11 @@
 
 import styles from "./profile.module.css"
 import Image from "next/image";
-
 import { ChangeEventHandler, FormEventHandler, forwardRef, useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
-import { submitPost as action, SubmitPostResponse, SuccessfulLoginResponse } from "@/app/actions";
+import { submitPost as action, createBioModal, changeBioModal, SuccessfulLoginResponse } from "@/app/actions";
 import { useRouter } from "next/navigation";
+import { useLocalStorage } from "usehooks-ts";
 
 export type PostFormProps = {
     onExitClick: () => void
@@ -18,13 +18,24 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
     charLimit
 }, ref) {
         const router = useRouter()
-        const [account, setAccountInfo] = useState<SuccessfulLoginResponse>({ token: "", username: "username" })
-        const [submitResponse, formAction] = useFormState(action, {})
+        const [changeBioResponse, formAction] = useFormState(changeBioModal, {error: ""})
         const [charCount, setCharCount] = useState(0)
+
+        const [account, setAccount] = useLocalStorage<SuccessfulLoginResponse>("account", { token: "", username: "" })
+
         const [previewSrc, setPreviewSrc] = useState<Blob | null>(null)
     
         const textareaRef = useRef<HTMLTextAreaElement>(null)
-    
+
+        //HELP ME 
+        const [username, setUsername] = useState("")
+
+        useEffect(() => {
+            setUsername(account.username)
+        }, [account])
+
+        useEffect(() => {console.log(changeBioResponse)}, [changeBioResponse])
+
         useEffect(() => {
             const accountStr = localStorage.getItem("account")
             if (!accountStr) {
@@ -32,12 +43,7 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                 return
             }
             
-            setAccountInfo(JSON.parse(accountStr))
         }, [])
-        
-        useEffect(() => {
-
-        }, [submitResponse])
         
         const removeAttachment = () => {
             setPreviewSrc(null)
@@ -56,6 +62,13 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
             if (previewSrc) payload.append("image", previewSrc, )
             formAction(payload)
         }
+
+        const changeModal = (payload: FormData) => {
+            payload.append("token", account.token)
+            
+            formAction(payload)
+        }
+        
         
         return (
             <div 
@@ -63,9 +76,9 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                 onClick={onExitClick}
                 className={styles["post-form-container"]}
             >
-                <form onSubmit={submitPost} className={styles["post-form"]} onClick={(evt) => { evt.stopPropagation() }}>
+                <form action={changeModal} className={styles["post-form"]} onClick={(evt) => { evt.stopPropagation() }}>
                     <div id={styles.profile}></div>
-                    <p id={styles.name}>{account.username}</p>
+                    <p id={styles.name}>{username}</p>
                     <Image 
                         id={styles.exit} 
                         onClick={onExitClick}
@@ -78,9 +91,11 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                         }}
                     />
                     <textarea 
+                        name = "bio"
                         ref={textareaRef}
                         id={styles.text} 
-                        onChange={onTextChange}
+                        //onChange={}
+
                         style={{ 
                             backgroundColor: "transparent", 
                             border: "1px solid black", 
@@ -99,6 +114,7 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
                             }}
                         >
                             <input 
+                                name = "picture"
                                 id="attach-button"
                                 type="file"
                                 accept="image/*"
