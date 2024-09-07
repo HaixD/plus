@@ -163,12 +163,12 @@ export type SuccessfulSaveBioResponse = {}
 
 export type SaveBioResponse = ErrorResponse | SuccessfulSaveBioResponse
 
-export async function createBioModal(_: SaveBioResponse, formData: FormData): Promise<SubmitPostResponse> {
+export async function createBioModal(_: SaveBioResponse, formData: FormData): Promise<SaveBioResponse> {
     const imageFolder = path.join(process.cwd(), "public", "external")
     
     const bio = formData.get("bio") as string
     const pfp = formData.get("picture") as Blob
-    const token = formData.get("token") as string
+    const token = formData.get("token") as string | null
     
     if (!pfp || !bio) return {
         error: "Bio cannot be empty and you must upload a picture"
@@ -200,7 +200,7 @@ export async function createBioModal(_: SaveBioResponse, formData: FormData): Pr
 }
 
 export type SuccessfulChangeBioResponse = { 
-    bio:string,
+    bio: string,
     pfp: string
 }
 
@@ -212,7 +212,7 @@ export async function changeBioModal(_: ChangeBioResponse, formData: FormData): 
     const pfp = formData.get("picture") as Blob
     const token = formData.get("token") as string | null
 
-    if (!bio || pfp) return { error: "Bio or profile picture could not be saved" }
+    if (!bio || !pfp) return { error: "Bio or profile picture could not be saved" }
 
     if (!token) return { error: "Credentials are invalid, please login again" }
     
@@ -221,7 +221,6 @@ export async function changeBioModal(_: ChangeBioResponse, formData: FormData): 
     } catch (error) {
         return { error: error as string }
     }
-    
     return { bio, pfp}
 }
 

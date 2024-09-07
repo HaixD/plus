@@ -170,7 +170,7 @@ export async function addBioModal(token: string, bio: string, imagePath: string 
     await new Promise<void>((resolve, reject) => {
         //not sure if this has to be in order for the columns
         db.run(`
-            INSERT INTO "profile" ("userID", "bio", "imagePath")
+            INSERT INTO "profile" ("id", "bio", "imagePath")
             VALUES (?, ?, ?)
             ON CONFLICT ("id") DO NOTHING
             RETURNING *
