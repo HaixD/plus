@@ -89,52 +89,51 @@ export async function verifyLogin(username: string, password: string) {
 
 export async function addAccount(username: string, password: string) {
     const db = new sqlite3.Database("plus.db")
-    return await new Promise<number>((resolve, reject) => {
-        db.serialize(() => {
-            let userID: number = -1
-            db.get(
-                `
-                INSERT INTO "accounts" ("username", "password")
-                VALUES
-                    (?, ?)
-                ON CONFLICT DO NOTHING
-                RETURNING "id"
-            `,
-                [username, password],
-                (error, row: any) => {
-                    if (error) {
-                        reject("Error occured when adding account")
-                    } else if (row !== undefined) {
-                        userID = row.id
-                    } else {
-                        reject("Username already exists")
-                    }
-                }
-            )
-
-            if (userID === -1) return
-
-            db.run(
-                `
-                INSERT INTO "profile" ("id", "bio", "picture")
-                VALUES (?, '', '/default.png')
-                ON CONFLICT ("id") DO NOTHING
-                RETURNING *
+    const userID = await new Promise<number>((resolve, reject) => {
+        db.get(
+            `
+            INSERT INTO "accounts" ("username", "password")
+            VALUES
+                (?, ?)
+            ON CONFLICT DO NOTHING
+            RETURNING "id"
         `,
-                [userID],
-                (error: any, row: any) => {
-                    if (error) {
-                        reject("Error occured when creating Biography")
-                    } else if (row === undefined) {
-                        reject("User already has existing biography")
-                    } else {
-                        resolve(userID)
-                    }
+            [username, password],
+            (error, row: any) => {
+                if (error) {
+                    reject("Error occured when adding account")
+                } else if (row !== undefined) {
+                    resolve(row.id)
+                } else {
+                    reject("Username already exists")
                 }
-            )
-        })
+            }
+        )
+    })
+    await new Promise<void>((resolve, reject) => {
+        db.get(
+            `
+            INSERT INTO "profiles" ("id", "bio", "picture")
+            VALUES (?, '', '/default.svg')
+            ON CONFLICT ("id") DO NOTHING
+            RETURNING *
+        `,
+            [userID],
+            (error: any, row: any) => {
+                console.log(row)
+                if (error) {
+                    reject("Error occured when creating Biography")
+                } else if (row === undefined) {
+                    reject("User already has existing biography")
+                } else {
+                    resolve()
+                }
+            }
+        )
         db.close()
     })
+
+    return userID
 }
 
 export async function changeUsername(token: string, newUsername: string) {
