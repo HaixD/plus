@@ -119,7 +119,7 @@ export function PostForm({
                     <ResponseMessage responseState={submitResponse}/>
                 </div>
                 <p id={styles.count}>{`${text.length}/${charLimit}`}</p>
-                <input type="submit" value="Send" className="button" id={styles.send}/>
+                <input type="submit" value="Send" className="button" id={styles.send} disabled={text === ""}/>
             </form>
         </PopupContainer>
     );
