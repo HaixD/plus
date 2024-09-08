@@ -13,7 +13,7 @@ export async function addToken(userID: number, token: string) {
             [token, userID],
             (error, row) => {
                 if (error || row === undefined) {
-                    reject("Error occured when generating credentials")
+                    reject("Error occured when generating credentials.")
                 } else {
                     resolve()
                 }
@@ -34,7 +34,7 @@ export async function updateToken(userID: number, token: string) {
             [userID],
             error => {
                 if (error) {
-                    reject("Error occured when generating credentials")
+                    reject("Error occured when generating credentials.")
                 } else {
                     resolve()
                 }
@@ -54,9 +54,9 @@ export async function getUserID(token: string) {
             [token],
             (error, row: any) => {
                 if (error) {
-                    reject("Error occured while accessing user information")
+                    reject("Error occured while accessing user information.")
                 } else if (row === undefined) {
-                    reject("Credentials have expired")
+                    reject("Credentials have expired.")
                 } else {
                     resolve(row.id)
                 }
@@ -75,11 +75,11 @@ export async function verifyLogin(username: string, password: string) {
             [username, password],
             (error, row: any) => {
                 if (error) {
-                    reject("Error occured when searching for account")
+                    reject("Error occured when searching for account.")
                 } else if (row !== undefined) {
                     resolve(row.id)
                 } else {
-                    reject("Invalid password for the given username")
+                    reject("Incorrect username or password.")
                 }
             }
         )
@@ -101,11 +101,11 @@ export async function addAccount(username: string, password: string) {
             [username, password],
             (error, row: any) => {
                 if (error) {
-                    reject("Error occured when adding account")
+                    reject("Error occured when adding account.")
                 } else if (row !== undefined) {
                     resolve(row.id)
                 } else {
-                    reject("Username already exists")
+                    reject("Username already exists.")
                 }
             }
         )
@@ -122,9 +122,9 @@ export async function addAccount(username: string, password: string) {
             (error: any, row: any) => {
                 console.log(row)
                 if (error) {
-                    reject("Error occured when creating Biography")
+                    reject("Error occured when creating biography.")
                 } else if (row === undefined) {
-                    reject("User already has existing biography")
+                    reject("User already has existing biography.")
                 } else {
                     resolve()
                 }
@@ -153,12 +153,12 @@ export async function changeUsername(token: string, newUsername: string) {
             (error, row: any) => {
                 if (error) {
                     if ("errno" in error && error.errno === 19) {
-                        reject("Username is already taken")
+                        reject("Username is already taken.")
                     } else {
-                        reject("Error occured when changing account username")
+                        reject("Error occured when changing account username.")
                     }
                 } else if (row === undefined) {
-                    reject("Error occured when changing account username")
+                    reject("Error occured when changing account username.")
                 } else {
                     resolve()
                 }
@@ -184,7 +184,7 @@ export async function changePassword(token: string, newPassword: string) {
             [newPassword, posterID],
             (error, row: any) => {
                 if (error || row === undefined) {
-                    reject("Error occured when changing account username")
+                    reject("Error occured when changing account username.")
                 } else {
                     resolve()
                 }
@@ -211,7 +211,7 @@ export async function addPost(
             [posterID, content, imagePath],
             error => {
                 if (error) {
-                    reject("Error occured when adding post")
+                    reject("Error occured when adding post.")
                 } else {
                     resolve()
                 }
@@ -242,9 +242,9 @@ export async function addBioModal(
             [bio, imagePath],
             (error: any, row: any) => {
                 if (error) {
-                    reject("Error occured when creating Biography")
+                    reject("Error occured when creating biography.")
                 } else if (row === undefined) {
-                    reject("User already has existing biography")
+                    reject("User already has existing biography.")
                 } else {
                     resolve()
                 }
