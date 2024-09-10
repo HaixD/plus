@@ -51,8 +51,8 @@ export async function login(_: LoginResponse, formData: FormData): Promise<Login
     const username = formData.get("username") as string | null
     const password = formData.get("password") as string | null
 
-    if (!username) return { error: "No username was given" }
-    if (!password) return { error: "No password was given" }
+    if (!username) return { error: "No username was given." }
+    if (!password) return { error: "No password was given." }
 
     return createLoginResponse(verifyLogin(username, password), username)
 }
@@ -68,12 +68,12 @@ export async function submitPost(_: SubmitPostResponse, formData: FormData): Pro
     const image = formData.get("image") as Blob | null
     const token = formData.get("token") as string | null
     
-    if (!text && !image) return { error: "No text or image provided" }
-    if (!token) return { error: "Credentials are invalid, please login again" }
+    if (!text && !image) return { error: "No text or image provided." }
+    if (!token) return { error: "Credentials are invalid, please login again." }
 
     let filename: string | null = null
     if (image) {
-        if (image.size === 0 || !/^image/.test(image.type)) return { error: "Image cannot be accepted" }
+        if (image.size === 0 || !/^image/.test(image.type)) return { error: "Image cannot be accepted." }
         
         const buffer = await image.arrayBuffer()
 
@@ -98,11 +98,11 @@ export async function createAccount(_: LoginResponse, formData: FormData): Promi
     const verifypassword = formData.get("verify-password") as string | null
     var special = /[^\w]|_/ 
 
-    if (!username) return { error: "No username was given" }
-    if (special.test(username)) return { error: "Username cannot contain special characters" }
-    if (!password) return { error: "No password was given" }
-    if (!verifypassword) return { error: "No password verification was given" }
-    if (password !== verifypassword) return { error: "Passwords do not match" }
+    if (!username) return { error: "No username was given." }
+    if (special.test(username)) return { error: "Username cannot contain special characters." }
+    if (!password) return { error: "No password was given." }
+    if (!verifypassword) return { error: "No password verification was given." }
+    if (password !== verifypassword) return { error: "Passwords do not match." }
     
     return createLoginResponse(addAccount(username, password), username)
 }
@@ -117,9 +117,9 @@ export async function changeUsername(_: ChangeUsernameResponse, formData: FormDa
     const username = formData.get("username") as string | null
     const token = formData.get("token") as string | null
 
-    if (!username) return { error: "No username was given" }
-    if (/[^\w]|_/.test(username)) return { error: "Username cannot contain special characters" }
-    if (!token) return { error: "Credentials are invalid, please login again" }
+    if (!username) return { error: "No username was given." }
+    if (/[^\w]|_/.test(username)) return { error: "Username cannot contain special characters." }
+    if (!token) return { error: "Credentials are invalid, please login again." }
     
     try {
         await dbChangeUsername(token, username)
@@ -141,10 +141,10 @@ export async function changePassword(_: ChangePasswordResponse, formData: FormDa
     const verifypassword = formData.get("verify-password") as string | null
     const oldToken = formData.get("token") as string | null
 
-    if (!password) return { error: "No password was given" }
-    if (!verifypassword) return { error: "No password verification was given" }
-    if (password !== verifypassword) return { error: "Passwords do not match" }
-    if (!oldToken) return { error: "Credentials are invalid, please login again" }
+    if (!password) return { error: "No password was given." }
+    if (!verifypassword) return { error: "No password verification was given." }
+    if (password !== verifypassword) return { error: "Passwords do not match." }
+    if (!oldToken) return { error: "Credentials are invalid, please login again." }
     
     let token = ""
     try {
@@ -171,16 +171,16 @@ export async function createBioModal(_: SaveBioResponse, formData: FormData): Pr
     const token = formData.get("token") as string | null
     
     if (!pfp || !bio) return {
-        error: "Bio cannot be empty and you must upload a picture"
+        error: "Bio cannot be empty and you must upload a picture."
     }
 
     if (!token) return {
-        error: "Credentials are invalid, please login again" 
+        error: "Credentials are invalid, please login again." 
     }
 
     let filename: string | null = null
     if (pfp) {
-        if (pfp.size === 0 || !/^image/.test(pfp.type)) return { error: "Image cannot be accepted" }
+        if (pfp.size === 0 || !/^image/.test(pfp.type)) return { error: "Image cannot be accepted." }
         
         const buffer = await pfp.arrayBuffer()
 
@@ -214,16 +214,16 @@ export async function changeBioModal(_: ChangeBioResponse, formData: FormData): 
 
     const imageFolder = path.join(process.cwd(), "public", "external")
 
-    if (!bio) return {error: "Bio could not be saved" }
+    if (!bio) return {error: "Bio could not be saved." }
 
-    if(!pfp) return {error: "Profile picture could not be saved"}
+    if(!pfp) return {error: "Profile picture could not be saved."}
 
-    if (!token) return { error: "Credentials are invalid, please login again" }
+    if (!token) return { error: "Credentials are invalid, please login again." }
 
 
     let filename: string | null = null
     if (pfp) {
-        if (pfp.size === 0 || !/^image/.test(pfp.type)) return { error: "Image cannot be accepted" }
+        if (pfp.size === 0 || !/^image/.test(pfp.type)) return { error: "Image cannot be accepted." }
         
         const buffer = await pfp.arrayBuffer()
 

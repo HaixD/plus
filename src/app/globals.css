@@ -19,6 +19,7 @@
     --background-color-popup-parent: rgba(0, 0, 0, 0.8);
     --background-color-popup-child: #e0d6d9;
     --background-color-button: #c2d9d1;
+    --background-color-button-disabled: #829890;
 
     --font-size-small: 0.75rem;
     --font-size-medium: 1rem;
@@ -67,6 +68,7 @@ h1 {
     width: fit-content;
     color: var(--color-button);
     background-color: var(--background-color-button);
+    &:disabled {background-color: var(--background-color-button-disabled)};
     padding: var(--padding-small) var(--padding-large);
     border: none;
     border-radius: var(--border-radius-pill);

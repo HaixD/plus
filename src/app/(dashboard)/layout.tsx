@@ -63,11 +63,11 @@ export default function Layout({
                                 display: settingsMenuVisible ? "grid" : "none"
                             }}
                         >
-                            <Link href="/settings">
+                            <Link href="/settings" style={{textDecoration: "none"}}>
                                 <Image src="/account.svg" alt="Your Account" width={50} height={50}/>
-                                <p>Your account</p>
+                                <p>Your Account</p>
                             </Link>
-                            <Link href="/login">
+                            <Link href="/login" style={{textDecoration: "none"}}>
                                 <Image src="/logout.svg" alt="Log Out" width={50} height={50}/>
                                 <p>Log Out</p>
                             </Link>
