@@ -200,10 +200,11 @@ export async function createBioModal(_: SaveBioResponse, formData: FormData): Pr
 }
 
 export type SuccessfulChangeBioResponse = { 
-    pfp: string
+    pfp: string,
+    bio: string
 }
 
-export type ChangeBioResponse = ErrorResponse | SuccessfulChangeBioResponse
+export type ChangeBioResponse =  SuccessfulChangeBioResponse | ErrorResponse
 
 //tested down here for change
 export async function changeBioModal(_: ChangeBioResponse, formData: FormData): Promise<ChangeBioResponse> {
@@ -237,6 +238,7 @@ export async function changeBioModal(_: ChangeBioResponse, formData: FormData): 
     } catch (error) {
         return { error: error as string }
     }
-    return { pfp:`/external/${filename}`}
+    //trying to return bio also, originally just only pfp
+    return { pfp:`/external/${filename}`, bio}
 }
 

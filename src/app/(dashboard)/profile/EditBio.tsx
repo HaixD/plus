@@ -4,7 +4,7 @@ import styles from "./profile.module.css"
 import Image from "next/image";
 import { ChangeEventHandler, FormEventHandler, forwardRef, useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
-import { submitPost as action, createBioModal, changeBioModal, SuccessfulLoginResponse } from "@/app/actions";
+import { submitPost as action, createBioModal, changeBioModal, SuccessfulLoginResponse, ChangeBioResponse  } from "@/app/actions";
 import { useRouter } from "next/navigation";
 import { useLocalStorage } from "usehooks-ts";
 
@@ -23,12 +23,22 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
 
         const [account, setAccount] = useLocalStorage<SuccessfulLoginResponse>("account", { token: "", username: "" })
 
+        //new bio code
+        const [bio, setText] = useLocalStorage<ChangeBioResponse>("bio", { pfp: "", bio: "" })
+
+        //Is this the right bio text I don't know
+        //What I'm trying to do, or think I'm trying to do is that I'm trying to have the changebioResponse be able to
+        //display here so I can utilize it. 
+       // const [bio, setBioText] = useLocalStorage<ChangeBioResponse>("bio", { pfp: "", bio: "" })
+
         const [previewSrc, setPreviewSrc] = useState<Blob | null>(null)
     
         const textareaRef = useRef<HTMLTextAreaElement>(null)
 
         //HELP ME 
         const [username, setUsername] = useState("")
+
+
 
         useEffect(() => {
             setUsername(account.username)
@@ -68,7 +78,6 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(func
             
             formAction(payload)
         }
-        
         
         return (
             <div 
