@@ -53,8 +53,8 @@ db.serialize(
 
         db.run(`
             CREATE TABLE IF NOT EXISTS "profiles" (
-                "picture" TEXT,
-                "bio" TEXT,
+                "picture" TEXT DEFAULT '',
+                "bio" TEXT DEFAULT '',
                 "id" INTEGER PRIMARY KEY REFERENCES "accounts" ("id")
             )
         `)
@@ -65,6 +65,11 @@ db.serialize(
             INSERT INTO "accounts" ("username", "password")
             VALUES ('admin', 'admin')
             ON CONFLICT DO NOTHING
+        `)
+
+        db.run(`
+            INSERT INTO "profiles" ("id")
+            VALUES (1)
         `)
     }
 )

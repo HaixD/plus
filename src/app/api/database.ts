@@ -1,3 +1,4 @@
+import { PublicAccountInfo } from "@/models/PublicAccountInfo"
 import sqlite3 from "sqlite3"
 
 export async function addToken(userID: number, token: string) {
@@ -62,6 +63,33 @@ export async function getUserID(token: string) {
                 }
             }
         )
+    })
+}
+
+export async function getPublicInfo(userID: number) {
+    const db = new sqlite3.Database("plus.db")
+    return await new Promise<PublicAccountInfo>((resolve, reject) => {
+        db.get(
+            `
+            SELECT 
+                "accounts".username,
+                "profiles".bio,
+                "profiles".picture
+            FROM "accounts" 
+                INNER JOIN "profiles" ON "accounts".id = "profiles".id
+            WHERE "accounts".id = ?
+        `,
+            [userID],
+            (error, row: any) => {
+                if (error || row === undefined) {
+                    console.log(error)
+                    reject("Error occured while getting public account data")
+                } else {
+                    resolve({ username: row.username, bio: row.bio })
+                }
+            }
+        )
+        db.close()
     })
 }
 
