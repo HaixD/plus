@@ -29,7 +29,7 @@ export default function Page() {
         postFormRef.current.style.display = "none"
     }
 
-    const [account, _] = useAccount()
+    const [account, setAccount] = useAccount()
 
     return (
         <>
@@ -74,6 +74,8 @@ export default function Page() {
                 ref={postFormRef}
                 charLimit={charLimit}
                 onExitClick={hidePostForm}
+                account={account}
+                accountSetter={setAccount}
             />
         </>
     )

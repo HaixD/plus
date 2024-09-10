@@ -184,7 +184,7 @@ export async function changePassword(
 }
 
 //past here is full test
-export type SuccessfulSaveBioResponse = {}
+export type SuccessfulSaveBioResponse = { bio: string }
 
 export type SaveBioResponse = ErrorResponse | SuccessfulSaveBioResponse
 
@@ -224,10 +224,10 @@ export async function createBioModal(
     try {
         await addBioModal(token, bio, filename)
     } catch (error) {
-        return { error }
+        return { error: error as string }
     }
 
-    return {}
+    return { bio }
 }
 
 export type SuccessfulChangeBioResponse = {
