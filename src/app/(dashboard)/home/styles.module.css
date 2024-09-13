@@ -1,0 +1,5 @@
+#logo {
+    width: fit-content;
+    margin-inline: auto;
+    padding-block: var(--padding-medium);
+}
