@@ -1,14 +1,15 @@
 "use client"
 
+import { getProfile, validateToken } from "@/actions/users"
 import Link, { LinkProps } from "next/link"
 import styles from "./styles.module.css"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { PostForm } from "./PostForm"
-import { useRouter } from "next/navigation"
-import { useLocalStorage } from "usehooks-ts"
 import { logout } from "@/actions/users"
+import { useLocalStorage } from "@/util/useLocalStorage"
+import { Profile } from "@/models/Profile"
 
 export default function Layout({
     children,
@@ -17,7 +18,11 @@ export default function Layout({
 }>) {
     const charLimit = 300
 
-    const router = useRouter()
+    const [profile, profileSetter] = useLocalStorage<Profile>("profile", {
+        username: "",
+        bio: "",
+        picture: "",
+    })
     const [postFormVisible, setPostFormVisible] = useState(false)
     const [settingsMenuVisible, setSettingsMenuVisible] = useState(false)
 
@@ -32,6 +37,14 @@ export default function Layout({
     const hideSettingsMenu = () => setSettingsMenuVisible(false)
     const toggleSettingsMenu = () =>
         setSettingsMenuVisible(!settingsMenuVisible)
+
+    useEffect(() => {
+        validateToken().then(() => {
+            getProfile().then(newProfile => {
+                profileSetter(newProfile)
+            })
+        })
+    }, [])
 
     return (
         <>
@@ -70,7 +83,7 @@ export default function Layout({
                                 />
                                 <p>Your Account</p>
                             </Link>
-                            <button
+                            <div
                                 style={{ textDecoration: "none" }}
                                 onClick={async () => logout()}
                             >
@@ -81,7 +94,7 @@ export default function Layout({
                                     height={50}
                                 />
                                 <p>Log Out</p>
-                            </button>
+                            </div>
                         </div>
                         <Image
                             id={styles["settings-button"]}
@@ -103,6 +116,7 @@ export default function Layout({
                 isVisible={postFormVisible}
                 charLimit={charLimit}
                 onExitClick={hidePostForm}
+                username={profile.username}
             />
         </>
     )

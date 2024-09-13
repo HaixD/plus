@@ -1,16 +1,16 @@
 "use server"
 
 import { db } from "@/database/drizzle"
-import { accounts, tokens } from "@/database/schema/users"
+import { accounts, profiles, tokens } from "@/database/schema/users"
 import { randomUUID } from "crypto"
 import { and, eq } from "drizzle-orm"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
-function applyToken(userID: number) {
+async function applyToken(userID: number) {
     const token = randomUUID()
 
-    db.insert(tokens).values({ token, id: userID })
+    await db.insert(tokens).values({ token, id: userID })
 
     const cookieStore = cookies()
     cookieStore.set("token", token, { sameSite: "strict" })
@@ -63,6 +63,8 @@ export async function createAccount(_: any, formData: FormData) {
                 .returning({ id: accounts.id })
         )[0]
         applyToken(account.id)
+
+        await db.insert(profiles).values({ id: account.id })
     } catch (error) {
         return { error: "Username has already been taken." }
     }
@@ -75,4 +77,47 @@ export async function logout() {
     cookieStore.delete("token")
 
     redirect("/login")
+}
+
+export async function getProfile() {
+    const cookieStore = cookies()
+    const token = cookieStore.get("token")?.value
+
+    if (!token) redirect("/login")
+
+    try {
+        const profile = (
+            await db
+                .select({
+                    username: accounts.username,
+                    bio: profiles.bio,
+                    picture: profiles.picture,
+                })
+                .from(accounts)
+                .innerJoin(profiles, eq(accounts.id, profiles.id))
+                .limit(1)
+        )[0]
+
+        return profile
+    } catch (error) {
+        redirect("/login")
+    }
+}
+
+export async function validateToken() {
+    const cookieStore = cookies()
+    const token = cookieStore.get("token")?.value
+
+    if (!token) redirect("/login")
+
+    const selection = await db
+        .select()
+        .from(tokens)
+        .where(eq(tokens.token, token))
+        .limit(1)
+
+    if (!selection.length) {
+        cookieStore.delete("token")
+        redirect("/login")
+    }
 }
