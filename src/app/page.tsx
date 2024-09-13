@@ -1,14 +1,7 @@
-"use client"
-
-import { useEffect } from "react";
+import { redirect } from "next/navigation"
 
 export default function Home() {
-    
-    useEffect(() => {
-        window.location.replace("/login")
-    }, [])
+    redirect("/login")
 
-  return (
-    <div>PLACEHOLDER</div>
-  );
+    return null
 }
