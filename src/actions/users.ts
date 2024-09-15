@@ -4,8 +4,22 @@ import { db } from "@/database/drizzle"
 import { accounts, profiles, tokens } from "@/database/schema/users"
 import { randomUUID } from "crypto"
 import { and, eq } from "drizzle-orm"
+import { readdir, writeFile } from "fs/promises"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import path from "path"
+
+export async function getUserID(token: string | undefined) {
+    if (!token) return
+
+    return db
+        .select({ id: accounts.id })
+        .from(accounts)
+        .innerJoin(tokens, eq(accounts.id, tokens.id))
+        .where(eq(tokens.token, token))
+        .limit(1)
+        .then(result => result[0]?.id)
+}
 
 async function applyToken(userID: number) {
     const token = randomUUID()
@@ -120,4 +134,69 @@ export async function validateToken() {
         cookieStore.delete("token")
         redirect("/login")
     }
+}
+
+export async function changeUsername(_: any, formData: FormData) {
+    const cookieStore = cookies()
+    const userID = await getUserID(cookieStore.get("token")?.value)
+
+    if (!userID) redirect("/login")
+
+    const username = formData.get("username") as string | null
+    if (!username) return { error: "No username was given." }
+    if (/[^\w]|_/.test(username))
+        return { error: "Username cannot contain special characters." }
+
+    await db.update(accounts).set({ username }).where(eq(accounts.id, userID))
+    redirect("/settings")
+}
+
+export async function changePassword(_: any, formData: FormData) {
+    const cookieStore = cookies()
+    const userID = await getUserID(cookieStore.get("token")?.value)
+
+    if (!userID) redirect("/login")
+
+    const password = formData.get("password") as string | null
+    const verifypassword = formData.get("verify-password") as string | null
+
+    if (!password) return { error: "No password was given." }
+    if (!verifypassword) return { error: "No password verification was given." }
+    if (password !== verifypassword) return { error: "Passwords do not match." }
+
+    await db.update(accounts).set({ password }).where(eq(accounts.id, userID))
+    redirect("/settings")
+}
+
+export async function changeBio(_: any, formData: FormData) {
+    const cookieStore = cookies()
+    const userID = await getUserID(cookieStore.get("token")?.value)
+
+    if (!userID) redirect("/login")
+
+    const bio = formData.get("bio") as string
+    const pfp = formData.get("picture") as Blob
+
+    const imageFolder = path.join(process.cwd(), "public", "external")
+
+    if (!bio) return { error: "Bio could not be saved." }
+    if (!pfp) return { error: "Profile picture could not be saved." }
+
+    let filename: string | null = null
+    if (pfp) {
+        if (pfp.size === 0 || !/^image/.test(pfp.type))
+            return { error: "Image cannot be accepted." }
+
+        const buffer = await pfp.arrayBuffer()
+
+        const dirLength = (await readdir(imageFolder)).length
+        filename = `${dirLength}.${pfp.type.match(/(?<=image\/).*/) ?? "blob"}`
+
+        writeFile(path.join(imageFolder, filename), Buffer.from(buffer))
+    }
+
+    await db
+        .update(profiles)
+        .set({ bio, picture: filename })
+        .where(eq(profiles.id, userID))
 }

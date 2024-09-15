@@ -2,37 +2,22 @@
 
 import styles from "./profile.module.css"
 import Image from "next/image"
-import {
-    ChangeEventHandler,
-    FormEventHandler,
-    forwardRef,
-    useEffect,
-    useRef,
-    useState,
-} from "react"
+import { forwardRef, useRef, useState } from "react"
 import { useFormState } from "react-dom"
-import {
-    submitPost as action,
-    createBioModal,
-    changeBioModal,
-    SuccessfulLoginResponse,
-    ChangeBioResponse,
-} from "@/app/actions"
+import { changeBio } from "@/actions/users"
 import { useRouter } from "next/navigation"
-import { useLocalStorage } from "usehooks-ts"
-import { useAccount } from "@/util/useAccount"
+import { ResponseMessage } from "@/components/response-message/ResponseMessage"
 
 export type PostFormProps = {
     onExitClick: () => void
     charLimit: number
-    account: SuccessfulLoginResponse
-    accountSetter: (value: SuccessfulLoginResponse) => void
+    username: string
 }
 
 export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(
-    function PostForm({ onExitClick, charLimit, account, accountSetter }, ref) {
+    function PostForm({ onExitClick, charLimit, username }, ref) {
         const router = useRouter()
-        const [changeBioResponse, formAction] = useFormState(changeBioModal, {
+        const [changeBioResponse, formAction] = useFormState(changeBio, {
             error: "",
         })
         const [charCount, setCharCount] = useState(0)
@@ -41,36 +26,8 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(
 
         const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-        //HELP ME
-        const [username, setUsername] = useState("")
-
-        useEffect(() => {
-            setUsername(account.username)
-        }, [account])
-
-        useEffect(() => {
-            if (!("error" in changeBioResponse)) {
-                accountSetter({ ...account, bio: changeBioResponse.bio })
-                // router.refresh()
-            }
-        }, [changeBioResponse])
-
-        useEffect(() => {
-            const accountStr = localStorage.getItem("account")
-            if (!accountStr) {
-                router.push("/login")
-                return
-            }
-        }, [])
-
         const removeAttachment = () => {
             setPreviewSrc(null)
-        }
-
-        const changeModal = (payload: FormData) => {
-            payload.append("token", account.token)
-
-            formAction(payload)
         }
 
         return (
@@ -80,7 +37,7 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(
                 className={styles["post-form-container"]}
             >
                 <form
-                    action={changeModal}
+                    action={formAction}
                     className={styles["post-form"]}
                     onClick={evt => {
                         evt.stopPropagation()
@@ -182,6 +139,7 @@ export const PostForm = forwardRef<HTMLDivElement, Readonly<PostFormProps>>(
                             </div>
                         </div>
                     ) : null}
+                    <ResponseMessage responseState={changeBioResponse} />
                     <p
                         id={styles.count}
                         style={{ margin: 0 }}

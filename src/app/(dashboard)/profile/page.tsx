@@ -1,20 +1,30 @@
 "use client"
 
-import profile from "./profile.module.css"
+import styles from "./profile.module.css"
 import Image from "next/image"
 
 import { PostForm } from "./EditBio"
 
-import { useEffect, useRef } from "react"
-import { useAccount } from "@/util/useAccount"
+import { useEffect, useRef, useState } from "react"
+import { Profile } from "@/models/Profile"
+import { getProfile } from "@/actions/users"
 
 export default function Page() {
     const charLimit = 300
 
     const postFormRef = useRef<HTMLDivElement>(null)
+    const [profile, profileSetter] = useState<Profile>({
+        username: "",
+        bio: "",
+        picture: "",
+    })
 
     useEffect(() => {
         hidePostForm()
+
+        getProfile().then(value => {
+            profileSetter(value)
+        })
     }, [])
 
     const showPostForm = () => {
@@ -27,17 +37,19 @@ export default function Page() {
         if (!postFormRef.current) return
 
         postFormRef.current.style.display = "none"
-    }
 
-    const [account, setAccount] = useAccount()
+        getProfile().then(value => {
+            profileSetter(value)
+        })
+    }
 
     return (
         <>
             <div>
-                <div className={profile.maincontainer}>
-                    <div className={profile.imagecontainer}> </div>
+                <div className={styles.maincontainer}>
+                    <div className={styles.imagecontainer}> </div>
                     <Image
-                        className={profile.iconprofile}
+                        className={styles.iconprofile}
                         style={{ gridArea: "profpic" }}
                         src="/logo1.png"
                         alt="logo"
@@ -60,11 +72,11 @@ export default function Page() {
                             height={30}
                         />
                     </div>
-                    <p style={{ gridArea: "username" }}>@{account.username}</p>
-                    <p style={{ gridArea: "bio" }}>{account.bio}</p>
+                    <p style={{ gridArea: "username" }}>@{profile.username}</p>
+                    <p style={{ gridArea: "bio" }}>{profile.bio}</p>
                     <p style={{ gridArea: "date" }}>Joined 2024, August 16</p>
                 </div>
-                <div className={profile.buttoncontainer}>
+                <div className={styles.buttoncontainer}>
                     <a href="placeholder1">Posts</a>
                     <a href="placeholder2">Likes</a>
                     <a href="placeholder3">Bookmarks</a>
@@ -74,8 +86,7 @@ export default function Page() {
                 ref={postFormRef}
                 charLimit={charLimit}
                 onExitClick={hidePostForm}
-                account={account}
-                accountSetter={setAccount}
+                username={profile.username}
             />
         </>
     )

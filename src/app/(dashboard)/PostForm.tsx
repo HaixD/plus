@@ -1,16 +1,11 @@
 "use client"
 
-import {
-    submitPost as action,
-    SubmitPostResponse,
-    SuccessfulLoginResponse,
-} from "@/app/actions"
+import { submitPost } from "@/actions/posts"
 import { ResponseMessage } from "@/components/response-message/ResponseMessage"
 import { PopupContainer } from "@/components/popup/popup-container/PopupContainer"
 import Image from "next/image"
 import { TextareaHTMLAttributes, useEffect, useState } from "react"
 import { useFormState } from "react-dom"
-import { useLocalStorage } from "usehooks-ts"
 import styles from "./styles.module.css"
 
 export type PostFormProps = {
@@ -28,10 +23,7 @@ export function PostForm({
 }: PostFormProps) {
     const [text, setText] = useState("")
     const [previewSrc, setPreviewSrc] = useState<Blob | null>(null)
-    const [serverResponse, formAction] = useFormState(action, { error: "" })
-    const [submitResponse, setSubmitResponse] = useState<SubmitPostResponse>({
-        error: "",
-    })
+    const [submitResponse, formAction] = useFormState(submitPost, { error: "" })
 
     const close = () => {
         setText("")
@@ -39,28 +31,14 @@ export function PostForm({
         onExitClick()
     }
 
-    useEffect(() => {
-        setSubmitResponse(serverResponse)
-
-        if (!("error" in serverResponse)) {
-            close()
-            setSubmitResponse({ error: "" })
-        }
-    }, [serverResponse])
-
     const removeAttachment = () => {
         setPreviewSrc(null)
-    }
-
-    const submitPost = (payload: FormData) => {
-        if (previewSrc === null) payload.delete("image")
-        formAction(payload)
     }
 
     return (
         <PopupContainer isVisible={isVisible} onClick={close}>
             <form
-                action={submitPost}
+                action={formAction}
                 id={styles["post-form"]}
                 onClick={evt => {
                     evt.stopPropagation()
