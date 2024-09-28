@@ -51,7 +51,7 @@ export default function Page() {
                     <Image
                         className={styles.iconprofile}
                         style={{ gridArea: "profpic" }}
-                        src="/logo1.png"
+                        src= {`/external/${profile.picture}`}
                         alt="logo"
                         width={120}
                         height={120}
