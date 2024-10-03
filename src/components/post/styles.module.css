@@ -1,0 +1,56 @@
+.post {
+    background-color: #c2d9d1;
+    padding: var(--padding-medium);
+    display: grid;
+    grid-template-areas: "pfp username" "content content" "interaction interaction";
+    grid-template-columns: var(--profile-scale-small) auto;
+    column-gap: var(--gap-medium);
+
+    #pfp {
+        width: var(--profile-scale-small);
+        height: var(--profile-scale-small);
+        background-color: black;
+        border-radius: var(--border-radius-circle);
+        grid-area: pfp;
+    }
+
+    #username {
+        grid-area: username;
+
+        &::before {
+            content: "@";
+        }
+    }
+
+    #content {
+        grid-area: content;
+    }
+
+    #interaction {
+        padding-top: var(--padding-medium);
+        grid-area: interaction;
+        display: flex;
+        justify-content: end;
+        gap: var(--gap-medium);
+    }
+}
+
+.icon {
+    background-color: transparent;
+    border: 2px solid transparent;
+    cursor: pointer;
+    display: grid;
+    padding: var(--padding-small);
+
+    & img,
+    & svg {
+        width: var(--icon-scale);
+        height: var(--icon-scale);
+        pointer-events: none;
+    }
+
+    &:hover {
+        border-color: black;
+        border-radius: var(--border-radius-small);
+    }
+}

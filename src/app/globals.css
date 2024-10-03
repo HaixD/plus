@@ -10,10 +10,10 @@
     --profile-scale-small: 64px;
     --profile-scale-large: 128px;
     --image-scale-small: 256px;
-    
+
     /* object widths */
     --width-row-button: 80%;
-    
+
     --background-color: #bfbfdb;
     --background-color-navbar: #0d1445;
     --background-color-popup-parent: rgba(0, 0, 0, 0.8);
@@ -39,13 +39,15 @@
     --padding-larger: 4rem;
 
     --border-radius-pill: 9999px;
+    --border-radius-small: 16px;
     --border-radius-medium: 32px;
     --border-radius-circle: 50%;
 
     --border-text: 1px solid black;
 }
 
-input[type="text"], input[type="password"] {
+input[type="text"],
+input[type="password"] {
     background-color: #d9d9d9;
     padding-block: 0.25rem;
     border: none;
@@ -68,7 +70,9 @@ h1 {
     width: fit-content;
     color: var(--color-button);
     background-color: var(--background-color-button);
-    &:disabled {background-color: var(--background-color-button-disabled)};
+    &:disabled {
+        background-color: var(--background-color-button-disabled);
+    }
     padding: var(--padding-small) var(--padding-large);
     border: none;
     border-radius: var(--border-radius-pill);
